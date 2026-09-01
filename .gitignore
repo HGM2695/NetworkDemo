@@ -45,6 +45,7 @@
 *.tlog
 *.lastbuildstate
 *.buildstate
+*.recipe
 
 # Debug symbols and generated executables
 *.pdb

@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36511.14 d17.14
+VisualStudioVersion = 17.14.36511.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{C8D5274F-AC00-46C7-1F8D-E88E81087A52}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameClient", "GameClient\GameClient.vcxproj", "{B78FE503-68A6-4698-ABA0-280B6934D1B5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetworkCore", "NetworkCore\NetworkCore.vcxproj", "{CD1EFD92-0426-4ADF-B7E5-F8B7BAF9C9A2}"
@@ -12,12 +10,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameProtocol", "GameProtocol\GameProtocol.vcxproj", "{E9D19EF1-5272-4AE2-86C1-A3B4EAEC9C20}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameServer", "GameServer\GameServer.vcxproj", "{6B9BDE3D-C3B6-4CB7-9B18-6ECE2A75BAC0}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GMEngineSDK", "GMEngineSDK", "{DE8401E1-FB7C-47C5-ACC8-0A5EC8B28CAB}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{252B48F0-3509-487C-AE18-C360A31B791A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{9F560230-BA30-47C0-BB60-75AFB626E186}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,11 +36,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{DE8401E1-FB7C-47C5-ACC8-0A5EC8B28CAB} = {C8D5274F-AC00-46C7-1F8D-E88E81087A52}
-		{252B48F0-3509-487C-AE18-C360A31B791A} = {DE8401E1-FB7C-47C5-ACC8-0A5EC8B28CAB}
-		{9F560230-BA30-47C0-BB60-75AFB626E186} = {DE8401E1-FB7C-47C5-ACC8-0A5EC8B28CAB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E7BFA13-E312-4978-B49B-54B2B7C7CBBB}
