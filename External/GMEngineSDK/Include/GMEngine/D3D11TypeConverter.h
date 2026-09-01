@@ -1,0 +1,26 @@
+#pragma once
+
+#include "GraphicsTypes.h"
+#include "VertexLayout.h"
+#include <d3d11.h>
+#include <vector>
+
+namespace gm
+{
+	D3D11_PRIMITIVE_TOPOLOGY				ToD3D11PrimitiveTopology(PrimitiveTopology topology);
+	D3D11_FILL_MODE							ToD3D11FillMode(FillMode fillMode);
+	D3D11_CULL_MODE							ToD3D11CullMode(CullMode cullMode);
+	D3D11_COMPARISON_FUNC					ToD3D11ComparisonFunc(CompareFunc compareFunc);
+	D3D11_BLEND								ToD3D11Blend(BlendFactor blendFactor);
+	D3D11_BLEND_OP							ToD3D11BlendOp(BlendOp blendOp);
+	D3D11_FILTER							ToD3D11Filter(TextureFilter filter);
+	D3D11_TEXTURE_ADDRESS_MODE				ToD3D11TextureAddressMode(TextureAddressMode addressMode);
+	DXGI_FORMAT								ToD3D11TextureFormat(TextureFormat format);
+	DXGI_FORMAT								ToD3D11SRVFormat(TextureFormat format);
+	DXGI_FORMAT								ToD3D11RTVFormat(TextureFormat format);
+	DXGI_FORMAT								ToD3D11DSVFormat(TextureFormat format);
+	uint32									ToD3D11BindFlags(TextureBindUsage usage);
+	DXGI_FORMAT								ToDXGIFormat(VertexElementFormat format);
+	const char*								ToD3D11SemanticName(VertexElementSemantic semantic);
+	std::vector<D3D11_INPUT_ELEMENT_DESC>	ToD3D11InputElements(const VertexLayoutDesc& layoutDesc);
+}

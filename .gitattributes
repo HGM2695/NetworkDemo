@@ -1,0 +1,45 @@
+# Automatically detect text files and normalize them in the Git index.
+* text=auto
+
+# Visual Studio and C++ source files use Windows line endings.
+*.sln               text eol=crlf
+*.vcxproj           text eol=crlf
+*.vcxproj.filters   text eol=crlf
+*.props             text eol=crlf
+*.targets           text eol=crlf
+*.cpp               text eol=crlf
+*.c                 text eol=crlf
+*.h                 text eol=crlf
+*.hpp               text eol=crlf
+*.inl               text eol=crlf
+*.rc                text eol=crlf
+*.rc2               text eol=crlf
+*.natvis            text eol=crlf
+
+# Repository metadata and documentation use LF consistently.
+*.md                text eol=lf
+.gitignore          text eol=lf
+.gitattributes      text eol=lf
+
+# Compiled libraries and runtime assets are binary files.
+*.lib               binary
+*.dll               binary
+*.cso               binary
+*.exe               binary
+*.pdb               binary
+
+# Image, font, audio, model, and packaged data assets are binary files.
+*.ico               binary
+*.png               binary
+*.jpg               binary
+*.jpeg              binary
+*.bmp               binary
+*.dds               binary
+*.tga               binary
+*.ttf               binary
+*.otf               binary
+*.wav               binary
+*.mp3               binary
+*.ogg               binary
+*.fbx               binary
+*.bin               binary

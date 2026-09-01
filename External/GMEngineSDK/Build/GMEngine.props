@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <GMEngineSDKRoot>$(MSBuildThisFileDirectory)..\</GMEngineSDKRoot>
+    <GMEngineSDKConfiguration Condition="'$(Configuration)' == 'Debug'">Debug</GMEngineSDKConfiguration>
+    <GMEngineSDKConfiguration Condition="'$(Configuration)' == 'Release'">Release</GMEngineSDKConfiguration>
+    <GMEngineDeployRuntime Condition="'$(GMEngineDeployRuntime)' == ''">true</GMEngineDeployRuntime>
+    <LocalDebuggerWorkingDirectory Condition="'$(ConfigurationType)' == 'Application'">$(OutDir)</LocalDebuggerWorkingDirectory>
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup Condition="'$(Platform)' == 'x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(GMEngineSDKRoot)Include;$(GMEngineSDKRoot)ThirdParty\DirectXTK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOMINMAX;DIRECTX_TOOLKIT_IMPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(GMEngineSDKRoot)Lib\$(GMEngineSDKConfiguration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Engine.lib;DirectXTK.lib;d3d11.lib;dxgi.lib;dxguid.lib;d3dcompiler.lib;d2d1.lib;dwrite.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>GM_ENABLE_DEBUG_TOOLS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>GM_ENABLE_DEBUG_TOOLS=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+
+  <ItemGroup Condition="'$(Platform)' == 'x64' and '$(GMEngineSDKConfiguration)' != ''">
+    <GMEngineRuntimeBinary Include="$(GMEngineSDKRoot)Bin\$(GMEngineSDKConfiguration)\*.dll" />
+    <GMEngineShader Include="$(GMEngineSDKRoot)Shaders\*.cso" />
+  </ItemGroup>
+
+  <Target Name="GMEngineValidatePlatform" BeforeTargets="PrepareForBuild" Condition="'$(Platform)' != 'x64'">
+    <Error Text="GMEngineSDK supports x64 builds only." />
+  </Target>
+
+  <Target Name="GMEngineValidateConfiguration" BeforeTargets="PrepareForBuild" Condition="'$(Platform)' == 'x64' and '$(GMEngineSDKConfiguration)' == ''">
+    <Error Text="GMEngineSDK supports Debug and Release configurations only." />
+  </Target>
+
+  <Target Name="GMEngineDeployRuntimeFiles"
+          AfterTargets="Build"
+          Condition="'$(ConfigurationType)' == 'Application' and '$(Platform)' == 'x64' and '$(GMEngineDeployRuntime)' == 'true'">
+    <MakeDir Directories="$(OutDir)..\Engine\Shaders" />
+    <Copy SourceFiles="@(GMEngineRuntimeBinary)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(GMEngineShader)" DestinationFolder="$(OutDir)..\Engine\Shaders" SkipUnchangedFiles="true" />
+  </Target>
+</Project>
