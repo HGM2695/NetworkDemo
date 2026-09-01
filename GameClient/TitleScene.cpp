@@ -7,7 +7,7 @@
 #include "GMEngine/CameraComponent.h"
 #include "GMEngine/CameraManager.h"
 #include "GMEngine/Application.h"
-#include "GMEngine/UIManager.h"
+#include "GMEngine/WidgetManager.h"
 #include "GMEngine/PathUtil.h"
 #include "GMEngine/Texture.h"
 #include "GMEngine/Resources.h"
@@ -32,21 +32,24 @@ namespace gm
 	void TitleScene::OnEnter()
 	{
 		GetCameraManager()->SetActiveCamera(L"TitleCamera");
-		UIManager& uiManager = APPLICATION.GetUIManager();
-		uiManager.ClearViewportWidgets();
-		uiManager.AddUserWidget<ConnectWidget>();
+		WidgetManager& widgetManager = APPLICATION.GetWidgetManager();
+		widgetManager.ClearViewportWidgets();
+		widgetManager.AddUserWidget<ConnectWidget>();
 	}
 
 	void TitleScene::OnExit()
 	{
-		APPLICATION.GetUIManager().ClearViewportWidgets();
+		APPLICATION.GetWidgetManager().ClearViewportWidgets();
 	}
 
 	void TitleScene::LoadResources()
 	{
 		constexpr std::array texturePaths =
 		{
-			L"Resources/Title/BG.png"
+			L"Resources/Title/BG.png",
+			L"Resources/Character/Idle.png",
+			L"Resources/Character/Jump.png",
+			L"Resources/Character/Walk.png"
 		};
 
 		Resources& resources = APPLICATION.GetResources();
