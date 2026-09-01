@@ -22,20 +22,29 @@ namespace gm
 		bool	Initialize(const WindowDesc& desc);
 		LRESULT MsgProc(HWND hWnd, UINT32 msg, WPARAM wParam, LPARAM lParam);
 
-		HWND	GetHandle() const { return _hWnd; }
-		uint32	GetWidth() const { return _width; }
-		uint32	GetHeight() const { return _height; }
+		HWND			GetHandle() const { return _hWnd; }
+		uint32			GetWidth() const { return _width; }
+		uint32			GetHeight() const { return _height; }
+		void			EnableTextInput();
+		void			DisableTextInput();
+		void			SetImeCandidatePosition(const Vector2& position);
+		std::wstring	ConsumeCommittedTextInput();
+		const std::wstring& GetCurrentTextInput() const { return _currentTextInput; }
 
 	private:
-		static	LRESULT CALLBACK StaticWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-		bool	RegistClass(HINSTANCE instance, const std::wstring& className);
-		bool	CreateWindowHandle(uint32 width, uint32 height, HINSTANCE instance, const std::wstring& className, const std::wstring& title, int nCmdShow);
+		static	LRESULT CALLBACK	StaticWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		bool						RegistClass(HINSTANCE instance, const std::wstring& className);
+		bool						CreateWindowHandle(uint32 width, uint32 height, HINSTANCE instance, const std::wstring& className, const std::wstring& title, int nCmdShow);
+		std::wstring				ReadImeString(DWORD index) const;
 
 	private:
-		HINSTANCE	_instance;
-		HWND		_hWnd{};
-		uint32		_width{};
-		uint32		_height{};
+		HINSTANCE					_instance;
+		HWND						_hWnd{};
+		uint32						_width{};
+		uint32						_height{};
+		std::wstring				_committedTextInput;
+		std::wstring				_currentTextInput;
+		bool						_isTextInputEnabled = false;
 	};
 }
 

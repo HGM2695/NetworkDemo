@@ -13,7 +13,7 @@ namespace gm
 	class SceneManager;
 	class Resources;
 	class AudioSystem;
-	class UIManager;
+	class WidgetManager;
 	class Window;
 	class IGraphicsDevice;
 	class IGraphicsResourceFactory;
@@ -73,7 +73,8 @@ namespace gm
 		SceneManager&		GetSceneManager() { return *_sceneManager; }
 		Resources&			GetResources() { return *_resources; }
 		AudioSystem&		GetAudioSystem() { return *_audioSystem; }
-		UIManager&			GetUIManager() { return *_uiManager; }
+		WidgetManager&		GetWidgetManager() { return *_widgetManager; }
+		Window&				GetWindow() { return *_window; }
 		IGraphicsDevice&	GetGraphicsDevice() { return *_graphicsDevice; }
 		IGraphicsResourceFactory& GetGraphicsResourceFactory() { return *_graphicsResourceFactory; }
 		IGraphicsCommandContext& GetGraphicsCommandContext() { return *_graphicsCommandContext; }
@@ -91,7 +92,8 @@ namespace gm
 		const SceneManager& GetSceneManager() const { return *_sceneManager; }
 		const Resources&	GetResources() const { return *_resources; }
 		const AudioSystem&	GetAudioSystem() const { return *_audioSystem; }
-		const UIManager&	GetUIManager() const { return *_uiManager; }
+		const WidgetManager& GetWidgetManager() const { return *_widgetManager; }
+		const Window&		GetWindow() const { return *_window; }
 		const IGraphicsDevice& GetGraphicsDevice() const { return *_graphicsDevice; }
 		const IGraphicsResourceFactory& GetGraphicsResourceFactory() const { return *_graphicsResourceFactory; }
 		const IGraphicsCommandContext& GetGraphicsCommandContext() const { return *_graphicsCommandContext; }
@@ -127,7 +129,7 @@ namespace gm
 
 		std::unique_ptr<AudioSystem>                 _audioSystem;
 		std::unique_ptr<Resources>                   _resources;
-		std::unique_ptr<UIManager>                   _uiManager;
+		std::unique_ptr<WidgetManager>               _widgetManager;
 		std::unique_ptr<SceneManager>                _sceneManager;
 		std::unique_ptr<GameInstance>                _gameInstance;
 

@@ -159,8 +159,8 @@ namespace gm
 		std::unique_ptr<CameraManager>				_cameraManager = nullptr;
 		std::unique_ptr<TickManager>				_tickManager = nullptr;
 		SceneAmbientSettings						_ambientSettings{};
-		DepthFogSettings						_depthFogSettings{};
-		ToneMappingSettings					_toneMappingSettings{};
+		DepthFogSettings							_depthFogSettings{};
+		ToneMappingSettings							_toneMappingSettings{};
 		bool										_isUnloadOnExit = true;
 		bool										_isInitialized = false;
 	};

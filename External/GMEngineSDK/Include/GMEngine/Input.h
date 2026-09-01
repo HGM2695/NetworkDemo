@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EngineCore.h"
+#include <string>
 #include <vector>
 
 namespace gm
@@ -98,7 +99,9 @@ namespace gm
 		Input(HWND hWnd);
 
 		// Keyboard
-		void			Tick();
+		void				Tick(std::wstring committedTextInput, const std::wstring& currentTextInput);
+		const std::wstring& GetCommittedTextInput() const { return _committedTextInput; }
+		const std::wstring& GetCurrentTextInput() const { return _currentTextInput; }
 
 		bool			IsKeyUp(KeyCode code) const { return getKey(code)._keyState == KeyState::Up; }
 		bool			IsKeyDown(KeyCode code) const { return getKey(code)._keyState == KeyState::Down; }
@@ -138,6 +141,8 @@ namespace gm
 
 	private:
 		std::vector<Key>	_keyList;
+		std::wstring		_committedTextInput;
+		std::wstring		_currentTextInput;
 
 		HWND				_hWnd = nullptr;
 		std::vector<Mouse>	_mouseList;
