@@ -67,6 +67,7 @@ ipch/
 *.tmp_proj
 *.cache
 *.binlog
+*.FileListAbsolute.txt
 
 # OS metadata
 .DS_Store

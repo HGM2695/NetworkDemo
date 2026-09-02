@@ -50,6 +50,42 @@ namespace gm
 		_socket = INVALID_SOCKET;
 	}
 
+	TcpSocket::IoResult TcpSocket::TrySend(std::span<const std::byte> buffer)
+	{
+		if (IsValid() == false)
+			return IoResult{ IoStatus::Failed, 0 };
+
+		if (buffer.size() > static_cast<std::size_t>(INT_MAX))
+			return IoResult{ IoStatus::Failed, 0 };
+
+		const int result = send(_socket, reinterpret_cast<const char*>(buffer.data()), static_cast<int>(buffer.size()), 0);
+		if (result == SOCKET_ERROR)
+			return HandleIoError();
+
+		return IoResult{ IoStatus::Transferred, result };
+	}
+
+	TcpSocket::IoResult TcpSocket::TryReceive(std::span<std::byte> buffer)
+	{
+		if (IsValid() == false)
+			return IoResult{ IoStatus::Failed, 0 };
+
+		if (buffer.empty())
+			return { IoStatus::Failed, 0 };
+
+		if (buffer.size() > static_cast<std::size_t>(INT_MAX))
+			return IoResult{ IoStatus::Failed, 0 };
+
+		const int result = recv(_socket, reinterpret_cast<char*>(buffer.data()), static_cast<int>(buffer.size()), 0);
+		if (result == SOCKET_ERROR)
+			return HandleIoError();
+
+		if (result == 0)
+			return { IoStatus::Closed, 0 };
+
+		return IoResult{ IoStatus::Transferred, result };
+	}
+
 	bool TcpSocket::IsValid() const
 	{
 		return _socket != INVALID_SOCKET;
@@ -92,5 +128,14 @@ namespace gm
 			return false;
 
 		return true;
+	}
+
+	TcpSocket::IoResult TcpSocket::HandleIoError()
+	{
+		const int err = WSAGetLastError();
+		if (err == WSAEWOULDBLOCK)
+			return IoResult{ IoStatus::WouldBlock, 0 };
+
+		return IoResult{ IoStatus::Failed, 0 };
 	}
 }

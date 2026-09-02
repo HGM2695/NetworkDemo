@@ -10,6 +10,7 @@ namespace gm
 		void OnInitialize() override;
 		void OnEnter() override;
 		void OnExit() override;
+		void OnTick(float deltaTime) override;
 
 	private:
 		void LoadResources();
