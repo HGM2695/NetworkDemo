@@ -11,7 +11,9 @@
 #include "GMEngine/PathUtil.h"
 #include "GMEngine/Texture.h"
 #include "GMEngine/Resources.h"
+#include "GMEngine/SoundWave.h"
 #include "GMEngine/IGraphicsResourceFactory.h"
+#include "GMEngine/AudioStatics.h"
 
 namespace gm
 {
@@ -35,11 +37,14 @@ namespace gm
 		WidgetManager& widgetManager = APPLICATION.GetWidgetManager();
 		widgetManager.ClearViewportWidgets();
 		widgetManager.AddUserWidget<ConnectWidget>();
+
+		PlayBGM(L"Title.BG");
 	}
 
 	void TitleScene::OnExit()
 	{
 		APPLICATION.GetWidgetManager().ClearViewportWidgets();
+		StopBGM();
 	}
 
 	void TitleScene::LoadResources()
@@ -68,6 +73,29 @@ namespace gm
 			std::shared_ptr<Texture> texture = resourceFactory.LoadTexture(desc);
 			GM_ASSERT_RETURN(texture, "%ls Texture 로드에 실패했습니다.", texturePath.c_str());
 			GM_ASSERT_RETURN(resources.Add(textureKey, texture), "%ls Texture 등록에 실패했습니다.", textureKey.c_str());
+		}
+
+		struct CueInfo
+		{
+			const wchar_t* resourceKey = nullptr;
+			const wchar_t* filePath = nullptr;
+		};
+
+		constexpr std::array<CueInfo, 1> CueInfos =
+		{
+			{ L"Title.BG", L"Resources/Sound/Title.mp3" },
+		};
+
+		for (const CueInfo& info : CueInfos)
+		{
+			if (resources.Find<SoundWave>(info.resourceKey))
+				continue;
+
+			SoundWaveDesc desc{};
+			desc.path = info.filePath;
+			std::shared_ptr<SoundWave> sound = SoundWave::Create(desc);
+			GM_ASSERT_RETURN(sound, "%ls sound 로드에 실패했습니다.", info.filePath);
+			GM_ASSERT_RETURN(resources.Add(info.resourceKey, sound), "%ls sound 등록에 실패했습니다.", info.resourceKey);
 		}
 	}
 }
