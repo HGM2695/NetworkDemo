@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ipv4Endpoint.h" />
     <ClInclude Include="TcpSocket.h" />
     <ClInclude Include="WinsockRuntime.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Ipv4Endpoint.cpp" />
     <ClCompile Include="TcpSocket.cpp" />
     <ClCompile Include="WinsockRuntime.cpp" />
   </ItemGroup>

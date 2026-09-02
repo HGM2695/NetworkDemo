@@ -9,9 +9,11 @@
   <ItemGroup>
     <ClCompile Include="WinsockRuntime.cpp" />
     <ClCompile Include="TcpSocket.cpp" />
+    <ClCompile Include="Ipv4Endpoint.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinsockRuntime.h" />
     <ClInclude Include="TcpSocket.h" />
+    <ClInclude Include="Ipv4Endpoint.h" />
   </ItemGroup>
 </Project>

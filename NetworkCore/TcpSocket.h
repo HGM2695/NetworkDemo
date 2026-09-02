@@ -13,11 +13,11 @@ namespace gm
 		TcpSocket(const TcpSocket&) = delete;
 		TcpSocket& operator=(const TcpSocket&) = delete;
 
-		bool Open();
-		void Close();
+		bool	Open();
+		void	Close();
 
-		bool IsValid() const;
-		SOCKET GetNativeSocket() const;
+		bool	IsValid() const;
+		SOCKET	GetNativeSocket() const;
 
 	private:
 		SOCKET _socket = INVALID_SOCKET;
