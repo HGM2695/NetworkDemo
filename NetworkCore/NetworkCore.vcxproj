@@ -20,12 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ipv4Endpoint.h" />
+    <ClInclude Include="TcpConnector.h" />
     <ClInclude Include="TcpListener.h" />
     <ClInclude Include="TcpSocket.h" />
     <ClInclude Include="WinsockRuntime.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ipv4Endpoint.cpp" />
+    <ClCompile Include="TcpConnector.cpp" />
     <ClCompile Include="TcpListener.cpp" />
     <ClCompile Include="TcpSocket.cpp" />
     <ClCompile Include="WinsockRuntime.cpp" />

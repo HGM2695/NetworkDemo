@@ -49,8 +49,8 @@ namespace gm
 		if (IsListening() == false)
 			return AcceptResult::Failed;
 
-		SOCKET clientSocket = accept(_listenSocket.GetNativeSocket(), nullptr, nullptr);
-		if (clientSocket == INVALID_SOCKET)
+		SOCKET acceptedSocket = accept(_listenSocket.GetNativeSocket(), nullptr, nullptr);
+		if (acceptedSocket == INVALID_SOCKET)
 		{
 			if (WSAGetLastError() == WSAEWOULDBLOCK)
 				return AcceptResult::WouldBlock;
@@ -58,7 +58,7 @@ namespace gm
 			return AcceptResult::Failed;
 		}
 		
-		if (outSocket.SetNativeSocket(clientSocket) == false)
+		if (outSocket.SetNativeSocket(acceptedSocket) == false)
 			return AcceptResult::Failed;
 
 		return AcceptResult::Accepted;
