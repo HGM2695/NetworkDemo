@@ -43,4 +43,24 @@ namespace gm
 		_listenSocket.Close();
 		_isListening = false;
 	}
+
+	TcpListener::AcceptResult TcpListener::TryAccept(TcpSocket& outSocket)
+	{
+		if (IsListening() == false)
+			return AcceptResult::Failed;
+
+		SOCKET clientSocket = accept(_listenSocket.GetNativeSocket(), nullptr, nullptr);
+		if (clientSocket == INVALID_SOCKET)
+		{
+			if (WSAGetLastError() == WSAEWOULDBLOCK)
+				return AcceptResult::WouldBlock;
+
+			return AcceptResult::Failed;
+		}
+		
+		if (outSocket.SetNativeSocket(clientSocket) == false)
+			return AcceptResult::Failed;
+
+		return AcceptResult::Accepted;
+	}
 }

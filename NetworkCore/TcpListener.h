@@ -8,15 +8,24 @@ namespace gm
 	class TcpListener
 	{
 	public:
+		enum class AcceptResult
+		{
+			Accepted,
+			WouldBlock,
+			Failed
+		};
+
 		~TcpListener();
 
-		bool		StartListening(const Ipv4Endpoint& endpoint, int backlog = SOMAXCONN);
-		void		StopListening();
+		bool			StartListening(const Ipv4Endpoint& endpoint, int backlog = SOMAXCONN);
+		void			StopListening();
 
-		bool		IsListening() const { return _isListening; }
+		AcceptResult	TryAccept(TcpSocket& outSocket);
+
+		bool			IsListening() const { return _isListening; }
 
 	private:
-		bool		_isListening = false;
-		TcpSocket	_listenSocket{};
+		bool			_isListening = false;
+		TcpSocket		_listenSocket{};
 	};
 }
