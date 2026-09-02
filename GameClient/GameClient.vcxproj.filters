@@ -28,8 +28,12 @@
     <ClInclude Include="TitleScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="MainScene.h" />
-    <ClInclude Include="ConnectWidget.h" />
+    <ClInclude Include="ConnectWidget.h">
+      <Filter>UserWidget</Filter>
+    </ClInclude>
+    <ClInclude Include="MainScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameClient.rc">
@@ -54,7 +58,11 @@
     <ClCompile Include="TitleScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="MainScene.cpp" />
-    <ClCompile Include="ConnectWidget.cpp" />
+    <ClCompile Include="ConnectWidget.cpp">
+      <Filter>UserWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="MainScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
