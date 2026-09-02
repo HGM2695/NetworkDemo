@@ -28,4 +28,9 @@ namespace gm
 	{
 		return _address;
 	}
+
+	bool Ipv4Endpoint::IsValid() const
+	{
+		return _address.sin_family == AF_INET;
+	}
 }

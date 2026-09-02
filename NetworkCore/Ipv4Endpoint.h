@@ -13,8 +13,9 @@ namespace gm
 		void				AssignAny(std::uint16_t port);
 
 		const sockaddr_in&	GetNativeAddress() const;
+		bool				IsValid() const;
 
 	private:
-		sockaddr_in _address{};
+		sockaddr_in			_address{};
 	};
 }

@@ -10,10 +10,12 @@
     <ClCompile Include="WinsockRuntime.cpp" />
     <ClCompile Include="TcpSocket.cpp" />
     <ClCompile Include="Ipv4Endpoint.cpp" />
+    <ClCompile Include="TcpListener.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinsockRuntime.h" />
     <ClInclude Include="TcpSocket.h" />
     <ClInclude Include="Ipv4Endpoint.h" />
+    <ClInclude Include="TcpListener.h" />
   </ItemGroup>
 </Project>
