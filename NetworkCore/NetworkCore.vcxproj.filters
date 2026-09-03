@@ -13,6 +13,7 @@
     <ClCompile Include="TcpListener.cpp" />
     <ClCompile Include="TcpConnector.cpp" />
     <ClCompile Include="ByteBuffer.cpp" />
+    <ClCompile Include="TcpSession.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinsockRuntime.h" />
@@ -21,6 +22,7 @@
     <ClInclude Include="TcpListener.h" />
     <ClInclude Include="TcpConnector.h" />
     <ClInclude Include="ByteBuffer.h" />
-    <ClInclude Include="PacketHeader.h" />
+    <ClInclude Include="PacketTypes.h" />
+    <ClInclude Include="TcpSession.h" />
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <span>
 
 namespace gm
 {
@@ -15,4 +16,10 @@ namespace gm
 
 	inline constexpr std::size_t PacketHeaderSize = sizeof(PacketHeader);
 	inline constexpr std::size_t MaxPacketSize = 16 * 1024; // 16KB
+
+	struct PacketView
+	{
+		PacketHeader				header;
+		std::span<const std::byte>	payload;
+	};
 }

@@ -39,6 +39,11 @@ namespace gm
 		return true;
 	}
 
+	bool ByteBuffer::Empty() const
+	{
+		return GetReadableSize() == 0;
+	}
+
 	std::size_t ByteBuffer::GetReadableSize() const
 	{
 		return _writePosition - _readPosition;

@@ -14,6 +14,7 @@ namespace gm
 		std::span<const std::byte>	Peek() const;
 		bool						Consume(std::size_t consumeSize);
 		bool						Write(std::span<const std::byte> data);
+		bool						Empty() const;
 
 		std::size_t					GetReadableSize() const;
 		std::size_t					GetWritableSize() const;
