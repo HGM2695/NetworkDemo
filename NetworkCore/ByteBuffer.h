@@ -6,26 +6,26 @@
 
 namespace gm
 {
-	class ReceiveBuffer
+	class ByteBuffer
 	{
 	public:		
-		ReceiveBuffer(std::size_t size);
+		ByteBuffer(std::size_t capacity);
 
-		std::span<const std::byte>	GetReadableSpan() const;
-		bool						Append(std::span<const std::byte> data);
+		std::span<const std::byte>	Peek() const;
 		bool						Consume(std::size_t consumeSize);
+		bool						Write(std::span<const std::byte> data);
 
 		std::size_t					GetReadableSize() const;
 		std::size_t					GetWritableSize() const;
 		bool						CanWrite(std::size_t writeSize) const;
 
 	private:
-		std::size_t				GetAvailableSize() const;
-		bool					needCompact(std::size_t writeSize) const;
+		std::size_t				GetContiguousWritableSize() const;
+		bool					NeedsCompaction(std::size_t writeSize) const;
 		void					Compact();
 
 	private:
-		std::vector<std::byte>	_buffer;
+		std::vector<std::byte>	_storage;
 		std::size_t				_readPosition = 0;
 		std::size_t				_writePosition = 0;
 	};
