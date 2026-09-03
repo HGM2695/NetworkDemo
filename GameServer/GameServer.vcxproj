@@ -134,7 +134,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GameServer.cpp" />
+    <ClCompile Include="GameServerApplication.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GameProtocol\GameProtocol.vcxproj">
@@ -143,6 +144,9 @@
     <ProjectReference Include="..\NetworkCore\NetworkCore.vcxproj">
       <Project>{cd1efd92-0426-4adf-b7e5-f8b7baf9c9a2}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameServerApplication.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
