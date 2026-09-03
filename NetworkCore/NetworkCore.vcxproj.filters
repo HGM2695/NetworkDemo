@@ -12,6 +12,7 @@
     <ClCompile Include="Ipv4Endpoint.cpp" />
     <ClCompile Include="TcpListener.cpp" />
     <ClCompile Include="TcpConnector.cpp" />
+    <ClCompile Include="ReceiveBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinsockRuntime.h" />
@@ -19,5 +20,6 @@
     <ClInclude Include="Ipv4Endpoint.h" />
     <ClInclude Include="TcpListener.h" />
     <ClInclude Include="TcpConnector.h" />
+    <ClInclude Include="ReceiveBuffer.h" />
   </ItemGroup>
 </Project>
