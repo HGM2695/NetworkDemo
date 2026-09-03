@@ -21,5 +21,6 @@
     <ClInclude Include="TcpListener.h" />
     <ClInclude Include="TcpConnector.h" />
     <ClInclude Include="ByteBuffer.h" />
+    <ClInclude Include="PacketHeader.h" />
   </ItemGroup>
 </Project>

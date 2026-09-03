@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Ipv4Endpoint.h" />
     <ClInclude Include="ByteBuffer.h" />
+    <ClInclude Include="PacketHeader.h" />
     <ClInclude Include="TcpConnector.h" />
     <ClInclude Include="TcpListener.h" />
     <ClInclude Include="TcpSocket.h" />
