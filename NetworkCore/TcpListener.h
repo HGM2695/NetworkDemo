@@ -22,7 +22,8 @@ namespace gm
 
 		AcceptResult	TryAccept(TcpSocket& outSocket);
 
-		bool			IsListening() const { return _isListening; }
+		bool				IsListening() const { return _isListening; }
+		const TcpSocket&	GetSocket() const { return _listenSocket; }
 
 	private:
 		bool			_isListening = false;

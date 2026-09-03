@@ -19,25 +19,34 @@ namespace gm
 			Invalid
 		};
 
-		using PacketHandler = std::function<void(PacketView)>;
+		using SessionId = std::uint32_t;
+		static constexpr SessionId InvalidSessionId = 0;
+
+		using PacketHandler = std::function<void(SessionId, PacketView)>;
 
 	public:
-		TcpSession(TcpSocket socket, PacketHandler packetHandler);
+		TcpSession(SessionId sessionId, TcpSocket socket, PacketHandler packetHandler);
 
-		PollResult		Poll();
-		bool			Send(std::uint16_t packetId, std::span<const std::byte> payload);
+		PollResult			Tick(bool readable, bool writable);
+		bool				Send(std::uint16_t packetId, std::span<const std::byte> payload);
+		const TcpSocket&	GetSocket() const;
+
+		bool				GetPendingSend() const { return _pendingSend; }
 
 	private:
 		PollResult		TrySend();
 		PollResult		TryReceive();
 		PollResult		HandleReceivePackets();
-	
+
 	private:
 		static constexpr std::size_t MaxBufferSize = 64 * 1024;
 
+		SessionId		_sessionId = InvalidSessionId;
 		TcpSocket		_socket{};
 		ByteBuffer		_sendBuffer{ MaxBufferSize };
 		ByteBuffer		_receiveBuffer{ MaxBufferSize };
 		PacketHandler	_packetHandler{};
+
+		bool			_pendingSend{};
 	};
 }

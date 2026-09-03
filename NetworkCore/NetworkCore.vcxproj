@@ -24,6 +24,7 @@
     <ClInclude Include="PacketTypes.h" />
     <ClInclude Include="TcpConnector.h" />
     <ClInclude Include="TcpListener.h" />
+    <ClInclude Include="TcpServerService.h" />
     <ClInclude Include="TcpSession.h" />
     <ClInclude Include="TcpSocket.h" />
     <ClInclude Include="WinsockRuntime.h" />
@@ -33,6 +34,7 @@
     <ClCompile Include="ByteBuffer.cpp" />
     <ClCompile Include="TcpConnector.cpp" />
     <ClCompile Include="TcpListener.cpp" />
+    <ClCompile Include="TcpServerService.cpp" />
     <ClCompile Include="TcpSession.cpp" />
     <ClCompile Include="TcpSocket.cpp" />
     <ClCompile Include="WinsockRuntime.cpp" />

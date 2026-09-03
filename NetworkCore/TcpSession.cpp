@@ -5,25 +5,34 @@
 #include <cstring>
 #include <utility>
 
+
 namespace gm
 {
-	TcpSession::TcpSession(TcpSocket socket, PacketHandler packetHandler) : _socket(std::move(socket)), _packetHandler(std::move(packetHandler))
+	TcpSession::TcpSession(SessionId sessionId, TcpSocket socket, PacketHandler packetHandler) : _sessionId(sessionId), _socket(std::move(socket)), _packetHandler(std::move(packetHandler))
 	{
 	}
 
-	TcpSession::PollResult TcpSession::Poll()
+	TcpSession::PollResult TcpSession::Tick(bool readable, bool writable)
 	{
-		PollResult result = TrySend();
-		if (result != PollResult::Alive)
-			return result;
-		
-		result = TryReceive();
-		if (result != PollResult::Alive)
-			return result;
 
-		result = HandleReceivePackets();
-		if (result != PollResult::Alive)
-			return result;
+		PollResult result = PollResult::Alive;
+		if (readable)
+		{
+			result = TryReceive();
+			if (result != PollResult::Alive)
+				return result;
+
+			result = HandleReceivePackets();
+			if (result != PollResult::Alive)
+				return result;
+		}
+
+		if (writable)
+		{
+			result = TrySend();
+			if (result != PollResult::Alive)
+				return result;
+		}
 
 		return PollResult::Alive;
 	}
@@ -45,7 +54,13 @@ namespace gm
 		_sendBuffer.Write(std::as_bytes(std::span{ &header, 1 }));
 		_sendBuffer.Write(payload);
 
+		_pendingSend = true;
 		return true;
+	}
+
+	const TcpSocket& TcpSession::GetSocket() const
+	{
+		return _socket;
 	}
 
 	TcpSession::PollResult TcpSession::TrySend()
@@ -68,6 +83,9 @@ namespace gm
 		case TcpSocket::IoStatus::Closed:
 			return PollResult::Closed;
 		}
+
+		if (_sendBuffer.Empty())
+			_pendingSend = false;
 		
 		return PollResult::Alive;
 	}
@@ -125,7 +143,10 @@ namespace gm
 			packetView.header = header;
 			packetView.payload = bufferView.subspan(PacketHeaderSize, packetSize - PacketHeaderSize);
 
-			_packetHandler(packetView);
+			if (_sessionId == InvalidSessionId)
+				return PollResult::Failed;
+
+			_packetHandler(_sessionId, packetView);
 			_receiveBuffer.Consume(packetSize);
 		}
 
