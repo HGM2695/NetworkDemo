@@ -14,8 +14,13 @@ namespace gm
 		void	Run();
 
 	private:
+		void	HandlePacket(TcpSession::SessionId id, PacketView packet);
+
+	private:
 		WinsockRuntime		_winsockRuntime;
 		TimeSystem			_timeSystem;
 		TcpServerService	_serverService;
+
+		std::uint16_t		_port = 49900;
 	};
 }

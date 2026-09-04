@@ -3,16 +3,22 @@
 #include <WinSock2.h>
 #include <iostream>
 #include <utility>
+#include <algorithm>
 
 namespace gm
 {
-	void TempHandler(TcpSession::SessionId sessionId, PacketView packetView)
+	bool TcpServerService::Initialize(std::uint16_t port, TcpSession::PacketHandler packetHandler)
 	{
+		if (_listener.IsListening())
+			return false;
 
-	}
+		if (port == 0)
+			return false;
+		
+		if (packetHandler == nullptr)
+			return false;
 
-	bool TcpServerService::Initialize()
-	{
+		_port = port;
 		_endpoint.AssignAny(_port);
 		if (_listener.StartListening(_endpoint) == false)
 		{
@@ -20,8 +26,7 @@ namespace gm
 			return false;
 		}
 
-		// 임시 핸들러 할당
-		_sessionPacketHandler = TempHandler;
+		_sessionPacketHandler = std::move(packetHandler);
 
 		return true;
 	}
@@ -74,6 +79,27 @@ namespace gm
 		}
 	}
 
+	bool TcpServerService::Send(TcpSession::SessionId sessionId, std::uint16_t packetId, std::span<const std::byte> payload)
+	{
+		if (sessionId == TcpSession::InvalidSessionId)
+			return false;
+
+		TcpSession* session = FindSession(sessionId);
+		if (session == nullptr)
+			return false;
+
+		if (session->Send(packetId, payload) == false)
+			return false;
+
+		return true;
+	}
+
+	void TcpServerService::Broadcast(std::uint16_t packetId, std::span<const std::byte> payload)
+	{
+		for (auto& session : _sessionList)
+			session.Send(packetId, payload);
+	}
+
 	void TcpServerService::CheckAccept()
 	{
 		while (true)
@@ -97,5 +123,18 @@ namespace gm
 	TcpSession::SessionId TcpServerService::GetNextSessionId()
 	{
 		return _nextSessionId++;
+	}
+
+	TcpSession* TcpServerService::FindSession(TcpSession::SessionId id)
+	{
+		auto Iter = std::find_if(_sessionList.begin(), _sessionList.end(), [id](const TcpSession& session)
+			{
+				return session.GetSessionId() == id;
+			});
+
+		if (Iter == _sessionList.end())
+			return nullptr;
+
+		return &(*Iter);
 	}
 }

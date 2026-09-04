@@ -12,7 +12,11 @@ namespace gm
 			return 0;
 		}
 
-		if (_serverService.Initialize() == false)
+		if (_serverService.Initialize(_port,
+			[this](TcpSession::SessionId id, PacketView packet)
+			{
+				HandlePacket(id, packet);
+			}) == false)
 		{
 			std::cout << "Server Service 초기화 실패" << std::endl;
 			return 0;
@@ -30,5 +34,10 @@ namespace gm
 
 			_serverService.Tick();
 		}
+	}
+
+	void GameServerApplication::HandlePacket(TcpSession::SessionId id, PacketView packet)
+	{
+
 	}
 }

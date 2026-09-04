@@ -32,11 +32,12 @@ namespace gm
 		const TcpSocket&	GetSocket() const;
 
 		bool				GetPendingSend() const { return _pendingSend; }
+		SessionId			GetSessionId() const { return _sessionId; }
 
 	private:
-		PollResult		TrySend();
-		PollResult		TryReceive();
-		PollResult		HandleReceivePackets();
+		PollResult			TrySend();
+		PollResult			TryReceive();
+		PollResult			HandleReceivePackets();
 
 	private:
 		static constexpr std::size_t MaxBufferSize = 64 * 1024;
