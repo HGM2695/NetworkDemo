@@ -19,7 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PacketId.h" />
+    <ClInclude Include="GamePackets.h" />
+    <ClInclude Include="GameProtocolTypes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameProtocol.cpp" />
