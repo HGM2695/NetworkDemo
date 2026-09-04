@@ -15,6 +15,7 @@
     <ClCompile Include="ByteBuffer.cpp" />
     <ClCompile Include="TcpSession.cpp" />
     <ClCompile Include="TcpServerService.cpp" />
+    <ClCompile Include="TcpClientService.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinsockRuntime.h" />
@@ -26,5 +27,6 @@
     <ClInclude Include="PacketTypes.h" />
     <ClInclude Include="TcpSession.h" />
     <ClInclude Include="TcpServerService.h" />
+    <ClInclude Include="TcpClientService.h" />
   </ItemGroup>
 </Project>

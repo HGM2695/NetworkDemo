@@ -9,9 +9,19 @@ namespace gm
 {
 	bool NetworkDemoGameInstance::OnInitialize()
 	{
-		SetupScenes();
+		if (_winsockRuntime.Initialize() == false)
+			return false;
 
+		if (_clientService.Initialize([this](PacketView packet) { HandlePacket(packet);}) == false)
+			return false;
+
+		SetupScenes();
 		return true;
+	}
+
+	void NetworkDemoGameInstance::OnTick(float deltaTime)
+	{
+		_clientService.Tick();
 	}
 
 	void NetworkDemoGameInstance::SetupScenes()
@@ -21,5 +31,10 @@ namespace gm
 		sceneManager.CreateScene<MainScene>(L"MainScene");
 
 		sceneManager.RequestSceneChange(L"TitleScene");
+	}
+
+	void NetworkDemoGameInstance::HandlePacket(PacketView packet)
+	{
+
 	}
 }

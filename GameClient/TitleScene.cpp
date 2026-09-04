@@ -14,12 +14,6 @@
 #include "GMEngine/SoundWave.h"
 #include "GMEngine/IGraphicsResourceFactory.h"
 #include "GMEngine/AudioStatics.h"
-#include "GMEngine/Input.h"
-
-#include "NetworkCore/WinsockRuntime.h"
-#include "NetworkCore/Ipv4Endpoint.h"
-#include "NetworkCore/TcpConnector.h"
-#include "NetworkCore/TcpSocket.h"
 
 namespace gm
 {
@@ -51,42 +45,6 @@ namespace gm
 	{
 		APPLICATION.GetWidgetManager().ClearViewportWidgets();
 		StopBGM();
-	}
-
-	void TitleScene::OnTick(float deltaTime)
-	{
-		static WinsockRuntime winsockRuntime{};
-		static TcpConnector connector{};
-		static Ipv4Endpoint serverEndpoint{};
-		static TcpSocket socket{};
-		static constexpr std::uint16_t port = 49900;
-
-		if (connector.TryTakeSocket(socket) == TcpConnector::ConnectResult::Complete)
-			GM_LOG("소켓 연결 성공");
-
-		if (APPLICATION.GetInput().IsKeyDown(KeyCode::Space))
-		{
-			GM_ASSERT(winsockRuntime.Initialize(), "WinSock 초기화 실패");
-			GM_ASSERT(serverEndpoint.Assign(L"127.0.0.1", port), "127.0.0.1 루프백 주소 할당 실패");
-			GM_ASSERT(connector.StartConnect(serverEndpoint), "127.0.0.1 루프백 주소 연결 요청 실패");
-		}
-		else if (APPLICATION.GetInput().IsKeyDown(KeyCode::S) && socket.IsValid())
-		{
-			std::string message = "들리십니까? 여기는 클라이언트 입니다.";
-			socket.TrySend(std::as_bytes(std::span{ message }));
-		}
-
-		std::array<std::byte, 1024> buffer{};
-		const gm::TcpSocket::IoResult result = socket.TryReceive(buffer);
-		if (result.status == gm::TcpSocket::IoStatus::Transferred)
-		{
-			const char* data = reinterpret_cast<const char*>(buffer.data());
-			GM_LOG("서버로부터 받았습니다. %s", data);
-		}
-		else if (result.status == gm::TcpSocket::IoStatus::Closed)
-		{
-			GM_LOG("서버가 종료되었습니다.");
-		}
 	}
 
 	void TitleScene::LoadResources()

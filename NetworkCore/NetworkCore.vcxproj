@@ -22,6 +22,7 @@
     <ClInclude Include="Ipv4Endpoint.h" />
     <ClInclude Include="ByteBuffer.h" />
     <ClInclude Include="PacketTypes.h" />
+    <ClInclude Include="TcpClientService.h" />
     <ClInclude Include="TcpConnector.h" />
     <ClInclude Include="TcpListener.h" />
     <ClInclude Include="TcpServerService.h" />
@@ -32,6 +33,7 @@
   <ItemGroup>
     <ClCompile Include="Ipv4Endpoint.cpp" />
     <ClCompile Include="ByteBuffer.cpp" />
+    <ClCompile Include="TcpClientService.cpp" />
     <ClCompile Include="TcpConnector.cpp" />
     <ClCompile Include="TcpListener.cpp" />
     <ClCompile Include="TcpServerService.cpp" />
