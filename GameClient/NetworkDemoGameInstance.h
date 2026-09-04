@@ -21,6 +21,7 @@ namespace gm
 
 	private:
 		void	SetupScenes();
+		void	LoadResources();
 		void	HandlePacket(PacketView packet);
 
 		bool	SendJoinPacket();

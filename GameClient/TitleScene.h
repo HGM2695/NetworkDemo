@@ -10,12 +10,11 @@ namespace gm
 	class TitleScene : public Scene
 	{
 	protected:
-		void OnInitialize() override;
-		void OnEnter() override;
-		void OnExit() override;
+		void	OnInitialize() override;
+		void	OnEnter() override;
+		void	OnExit() override;
 
 	private:
-		void	LoadResources();
 		void	OnConnectButtonClicked();
 
 	private:
