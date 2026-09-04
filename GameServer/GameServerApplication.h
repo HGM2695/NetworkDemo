@@ -5,6 +5,8 @@
 #include "NetworkCore/TcpServerService.h"
 #include "NetworkCore/WinsockRuntime.h"
 
+#include "GameProtocol/GameProtocolTypes.h"
+
 namespace gm
 {
 	class GameServerApplication
@@ -22,5 +24,6 @@ namespace gm
 		TcpServerService	_serverService;
 
 		std::uint16_t		_port = 49900;
+		PlayerId			_nextPlayerId = 1;
 	};
 }

@@ -16,7 +16,10 @@
 #include "GameProtocol/GamePackets.h"
 
 #include <array>
+#include <cstring>
 #include <memory>
+#include <span>
+#include <string>
 #include <utility>
 
 namespace gm
@@ -139,7 +142,40 @@ namespace gm
 
 	void NetworkDemoGameInstance::HandlePacket(PacketView packet)
 	{
-		GM_LOG("Packet");
+		PacketId packetId = static_cast<PacketId>(packet.header.packetId);
+
+		switch (packetId)
+		{
+		case gm::PacketId::S2C_JoinAccepted:
+		{
+			if (packet.payload.size() != sizeof(S2CJoinAccepted))
+				return;
+
+			S2CJoinAccepted joinAccepted{};
+			memcpy(&joinAccepted, packet.payload.data(), sizeof(S2CJoinAccepted));
+
+			_clientPlayerId = joinAccepted.playerId;
+			_state = State::Joined;
+			APPLICATION.GetSceneManager().RequestSceneChange(L"MainScene");
+
+			break;
+		}
+		case gm::PacketId::S2C_PlayerJoined:
+
+			break;
+		case gm::PacketId::S2C_PlayerLeft:
+
+			break;
+		case gm::PacketId::S2C_PlayerMoved:
+
+			break;
+		case gm::PacketId::S2C_ChatBroadcast:
+
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	bool NetworkDemoGameInstance::SendJoinPacket()

@@ -6,6 +6,9 @@
 #include "NetworkCore/TcpClientService.h"
 #include "NetworkCore/PacketTypes.h"
 
+#include "GameProtocol/GameProtocolTypes.h"
+
+#include <cstdint>
 #include <string>
 
 namespace gm
@@ -41,5 +44,7 @@ namespace gm
 
 		State				_state{};
 		std::string			_clientNickname{};
+
+		PlayerId			_clientPlayerId{};
 	};
 }

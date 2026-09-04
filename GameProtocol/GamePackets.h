@@ -30,7 +30,6 @@ namespace gm
     struct S2CJoinAccepted
     {
         PlayerId            playerId = InvalidPlayerId;
-        NetworkPosition2D   initialPosition{};
     };
 
     struct S2CPlayerJoinedPrefix
