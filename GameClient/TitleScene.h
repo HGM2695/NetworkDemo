@@ -1,9 +1,12 @@
 #pragma once
 
 #include "GMEngine/Scene.h"
+#include "GMEngine/Event.h"
 
 namespace gm
 {
+	class ConnectWidget;
+
 	class TitleScene : public Scene
 	{
 	protected:
@@ -12,6 +15,11 @@ namespace gm
 		void OnExit() override;
 
 	private:
-		void LoadResources();
+		void	LoadResources();
+		void	OnConnectButtonClicked();
+
+	private:
+		EventConnection			_buttonClickConnection{};
+		ConnectWidget*			_connectWidget{};
 	};
 }

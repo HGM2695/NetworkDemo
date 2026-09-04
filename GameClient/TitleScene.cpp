@@ -1,7 +1,10 @@
 #include "TitleScene.h"
 #include "ConnectWidget.h"
+#include "NetworkDemoGameInstance.h"
 
 #include <array>
+#include <cstdint>
+#include <string>
 
 #include "GMEngine/GameObject.h"
 #include "GMEngine/CameraComponent.h"
@@ -14,6 +17,8 @@
 #include "GMEngine/SoundWave.h"
 #include "GMEngine/IGraphicsResourceFactory.h"
 #include "GMEngine/AudioStatics.h"
+#include "GMEngine/Button.h"
+#include "GMEngine/InputTextBox.h"
 
 namespace gm
 {
@@ -36,7 +41,12 @@ namespace gm
 		GetCameraManager()->SetActiveCamera(L"TitleCamera");
 		WidgetManager& widgetManager = APPLICATION.GetWidgetManager();
 		widgetManager.ClearViewportWidgets();
-		widgetManager.AddUserWidget<ConnectWidget>();
+		_connectWidget = widgetManager.AddUserWidget<ConnectWidget>();
+		Button* button = _connectWidget->FindWidget<Button>(L"connectButton");
+		button->OnClicked.Subscribe(_buttonClickConnection, [this](const ButtonClickedEvent&)
+			{
+				this->OnConnectButtonClicked();
+			});
 
 		PlayBGM(L"Title.BG");
 	}
@@ -81,9 +91,12 @@ namespace gm
 			const wchar_t* filePath = nullptr;
 		};
 
-		constexpr std::array<CueInfo, 1> CueInfos =
+		constexpr std::array<CueInfo, 3> CueInfos =
 		{
-			{ L"Title.BG", L"Resources/Sound/Title.mp3" },
+			{	L"Title.BG", L"Resources/Sound/Title.mp3",
+				L"Title.Click", L"Resources/Sound/BtMouseClick.mp3",
+				L"Main.Jump", L"Resources/Sound/Jump.mp3"
+			},
 		};
 
 		for (const CueInfo& info : CueInfos)
@@ -97,5 +110,21 @@ namespace gm
 			GM_ASSERT_RETURN(sound, "%ls sound 로드에 실패했습니다.", info.filePath);
 			GM_ASSERT_RETURN(resources.Add(info.resourceKey, sound), "%ls sound 등록에 실패했습니다.", info.resourceKey);
 		}
+	}
+
+	void TitleScene::OnConnectButtonClicked()
+	{
+		if (_connectWidget == nullptr)
+			return;
+
+		const std::wstring& address = _connectWidget->FindWidget<InputTextBox>(L"addressInput")->GetText();
+		const std::wstring& port = _connectWidget->FindWidget<InputTextBox>(L"portInput")->GetText();
+		const std::wstring& name = _connectWidget->FindWidget<InputTextBox>(L"nameInput")->GetText();
+
+		if (address.empty() || port.empty() || name.empty())
+			return;
+
+		const std::uint16_t portNumber = static_cast<std::uint16_t>(std::stoul(port));
+		static_cast<NetworkDemoGameInstance&>(APPLICATION.GetGameInstance()).RequestJoin(address, portNumber, name);
 	}
 }
