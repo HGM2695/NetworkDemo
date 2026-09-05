@@ -1,4 +1,5 @@
 #include "MainScene.h"
+#include "NameTagWidget.h"
 
 #include "GMEngine/GameObject.h"
 #include "GMEngine/CameraComponent.h"
@@ -8,19 +9,24 @@
 #include "GMEngine/AnimatedSpriteComponent.h"
 #include "GMEngine/TransformComponent.h"
 #include "GMEngine/SpriteAnimator.h"
+#include "GMEngine/WidgetComponent.h"
 
 namespace gm
 {
 	void MainScene::SpawnPlayer(PlayerId playerId, Vector2 position, const std::wstring& nickName)
 	{
 		GameObject* player = SpawnGameObject<GameObject>(Vector3{ position.x, position.y, 0.f});
-		player->GetComponent<TransformComponent>()->SetScale(Vector3{ 400.f, 400.f, 1.f });
+		player->GetComponent<TransformComponent>()->SetScale(Vector3{ 450.f, 450.f, 1.f });
 		AnimatedSpriteComponent* spriteComponent = player->AddComponent<AnimatedSpriteComponent>();
 		SpriteAnimator& animator = spriteComponent->GetAnimator();
 		GM_ASSERT_RETURN(animator.AddClip(L"Idle", L"Player.Idle"), " 플레이어 Idle 클립 추가 실패");
 		GM_ASSERT_RETURN(animator.AddClip(L"Jump", L"Player.Jump"), " 플레이어 Jump 클립 추가 실패");
 		GM_ASSERT_RETURN(animator.AddClip(L"Walk", L"Player.Walk"), " 플레이어 Walk 클립 추가 실패");
 		GM_ASSERT_RETURN(animator.Play(L"Idle"), "플레이어 Idle 애니메이션 재생 실패");
+
+		WidgetComponent* nameTagComponent = player->AddComponent<WidgetComponent>();
+		nameTagComponent->SetUserWidget<NameTagWidget>(nickName);
+		nameTagComponent->SetScreenOffset(Vector2{ 0.f, 100.f });
 
 		_playerList[playerId] = player->GetWeakPtr();
 	}

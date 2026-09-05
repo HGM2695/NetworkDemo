@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClInclude Include="ConnectWidget.h" />
     <ClInclude Include="MainScene.h" />
+    <ClInclude Include="NameTagWidget.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="NetworkDemoGameInstance.h" />
     <ClInclude Include="Resource.h" />
@@ -142,6 +143,7 @@
     <ClCompile Include="ConnectWidget.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainScene.cpp" />
+    <ClCompile Include="NameTagWidget.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="NetworkDemoGameInstance.cpp" />
   </ItemGroup>

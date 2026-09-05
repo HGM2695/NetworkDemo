@@ -34,6 +34,9 @@
     <ClInclude Include="MainScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="NameTagWidget.h">
+      <Filter>UserWidget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameClient.rc">
@@ -63,6 +66,9 @@
     </ClCompile>
     <ClCompile Include="MainScene.cpp">
       <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="NameTagWidget.cpp">
+      <Filter>UserWidget</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
