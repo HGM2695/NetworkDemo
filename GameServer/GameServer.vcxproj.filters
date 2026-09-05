@@ -10,9 +10,11 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameServerApplication.cpp" />
     <ClCompile Include="GameServerScene.cpp" />
+    <ClCompile Include="PlayerMoveInputComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameServerApplication.h" />
     <ClInclude Include="GameServerScene.h" />
+    <ClInclude Include="PlayerMoveInputComponent.h" />
   </ItemGroup>
 </Project>

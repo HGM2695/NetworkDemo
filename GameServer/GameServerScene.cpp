@@ -1,10 +1,43 @@
 #include "GameServerScene.h"
 
 #include "GMEngine/GameObject.h"
+#include "GMEngine/Rigidbody2DComponent.h"
 #include "GMEngine/BoxCollider2DComponent.h"
+
+#include "PlayerMoveInputComponent.h"
 
 namespace gm
 {
+	void GameServerScene::SpawnPlayer(PlayerId playerId)
+	{
+		GameObject* player = SpawnGameObject<GameObject>(Vector3{ _playerSpawnPosition.x, _playerSpawnPosition.y, 0.f });
+		player->AddComponent<Rigidbody2DComponent>();
+		BoxCollider2DComponent* collider = player->AddComponent<BoxCollider2DComponent>();
+		collider->SetSize(Vector2{ 60.f, 100.f });
+		player->AddComponent<PlayerMoveInputComponent>();
+		_playerList[playerId] = player->GetWeakPtr();
+	}
+
+	void GameServerScene::DestroyPlayer(PlayerId playerId)
+	{
+		auto iter = _playerList.find(playerId);
+		iter->second->Destroy();
+		_playerList.erase(iter);
+	}
+
+	void GameServerScene::ApplyMoveInput(PlayerId playerId, float directionX, bool isJump)
+	{
+		auto iter = _playerList.find(playerId);
+		if (iter == _playerList.end())
+			return;
+
+		if (iter->second.IsValid() == false)
+			return;
+
+		PlayerMoveInputComponent* moveComponent = iter->second->GetComponent<PlayerMoveInputComponent>();
+		moveComponent->Input(directionX, isJump);
+	}
+
 	void GameServerScene::OnInitialize()
 	{
 		float MapWidth = 1600.f;

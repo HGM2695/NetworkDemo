@@ -66,12 +66,19 @@ namespace gm
 			if (packet.payload.empty() || packet.payload.size() > MaxNicknameByteLength)
 				return;
 
+			if (_playerIdList.find(id) != _playerIdList.end())
+				return;
+
 			S2CJoinAccepted accepetedPacket{};
 			accepetedPacket.playerId = _nextPlayerId;
 
 			const std::span<const std::byte> view = std::as_bytes(std::span{ &accepetedPacket, 1 });
-			if (_serverService.Send(id, static_cast<uint16_t>(PacketId::S2C_JoinAccepted), view) == true)
-				++_nextPlayerId;
+			if (_serverService.Send(id, static_cast<uint16_t>(PacketId::S2C_JoinAccepted), view) == false)
+				return;
+
+			_gameServerScene->SpawnPlayer(_nextPlayerId);
+			_playerIdList[id] = _nextPlayerId;
+			++_nextPlayerId;
 		}
 			break;
 

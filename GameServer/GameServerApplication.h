@@ -9,6 +9,8 @@
 
 #include "GameProtocol/GameProtocolTypes.h"
 
+#include <unordered_map>
+
 namespace gm
 {
 	class GameServerScene;
@@ -26,8 +28,9 @@ namespace gm
 		WinsockRuntime		_winsockRuntime;
 		TcpServerService	_serverService;
 
-		std::uint16_t		_port = 49900;
-		PlayerId			_nextPlayerId = 1;
+		std::unordered_map<TcpSession::SessionId, PlayerId> _playerIdList{};
+		PlayerId											_nextPlayerId = 1;
+		std::uint16_t										_port = 49900;
 
 		TimeSystem			_timeSystem;
 		SceneManager		_sceneManager;
