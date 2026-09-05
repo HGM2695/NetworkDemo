@@ -47,6 +47,15 @@ namespace gm
 		return true;
 	}
 
+	void NetworkDemoGameInstance::RequestMove(float directionX, bool jump)
+	{
+		C2SMoveRequest packet{};
+		packet.directionX = directionX;
+		packet.isJump = jump ? 1 : 0;
+
+		_clientService.Send(static_cast<uint16_t>(PacketId::C2S_MoveRequest), std::as_bytes(std::span{ &packet, 1 }));
+	}
+
 	bool NetworkDemoGameInstance::OnInitialize()
 	{
 		if (_winsockRuntime.Initialize() == false)
@@ -116,7 +125,7 @@ namespace gm
 			utf8NickName.resize(nickNameSize);
 			memcpy(utf8NickName.data(), view.last(nickNameSize).data(), nickNameSize);
 
-			_mainScene->SpawnPlayer(prefix.playerId, Vector2{ prefix.positionX, prefix.positionY }, Utf8ToWide(utf8NickName.data()));
+			_mainScene->SpawnPlayer(prefix.playerId, Vector2{ prefix.positionX, prefix.positionY }, Utf8ToWide(utf8NickName.data()), _playerId == prefix.playerId);
 
 			break;
 		}
@@ -127,8 +136,14 @@ namespace gm
 		}
 		case gm::PacketId::S2C_PlayerMoved:
 		{
-			break;
+			if (packet.payload.size() != sizeof(S2CPlayerMoved))
+				return;
 
+			S2CPlayerMoved playerMoved{};
+			memcpy(&playerMoved, packet.payload.data(), sizeof(playerMoved));
+			_mainScene->SetPlayerState(playerMoved.playerId, Vector2{ playerMoved.positionX, playerMoved.positionY }, playerMoved.motion, playerMoved.facing);
+
+			break;
 		}
 		case gm::PacketId::S2C_ChatBroadcast:
 		{

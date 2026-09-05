@@ -131,6 +131,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ClientPlayerAnimationComponent.h" />
+    <ClInclude Include="ClientPlayerInputComponent.h" />
     <ClInclude Include="ConnectWidget.h" />
     <ClInclude Include="MainScene.h" />
     <ClInclude Include="NameTagWidget.h" />
@@ -140,6 +142,8 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ClientPlayerAnimationComponent.cpp" />
+    <ClCompile Include="ClientPlayerInputComponent.cpp" />
     <ClCompile Include="ConnectWidget.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainScene.cpp" />

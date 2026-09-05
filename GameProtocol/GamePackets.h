@@ -47,14 +47,16 @@ namespace gm
     struct C2SMoveRequest
     {
         float           directionX = 0.f;
-        float           directionY = 0.f;
+        std::uint8_t    isJump = 0;
     };
 
     struct S2CPlayerMoved
     {
-        PlayerId        playerId = InvalidPlayerId;
-        float           positionX = 0.f;
-        float           positionY = 0.f;
+        PlayerId                playerId = InvalidPlayerId;
+        PlayerMotionState       motion = PlayerMotionState::Idle;
+        PlayerFacingDirection   facing = PlayerFacingDirection::Right;
+        float                   positionX = 0.f;
+        float                   positionY = 0.f;
     };
 
     struct S2CChatBroadcastPrefix

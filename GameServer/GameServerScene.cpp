@@ -5,7 +5,7 @@
 #include "GMEngine/BoxCollider2DComponent.h"
 #include "GMEngine/TransformComponent.h"
 
-#include "PlayerMoveInputComponent.h"
+#include "ServerPlayerMovementComponent.h"
 
 namespace gm
 {
@@ -15,7 +15,7 @@ namespace gm
 		player->AddComponent<Rigidbody2DComponent>();
 		BoxCollider2DComponent* collider = player->AddComponent<BoxCollider2DComponent>();
 		collider->SetSize(Vector2{ 60.f, 100.f });
-		player->AddComponent<PlayerMoveInputComponent>();
+		player->AddComponent<ServerPlayerMovementComponent>();
 		_playerList[playerId] = player->GetWeakPtr();
 	}
 
@@ -35,8 +35,8 @@ namespace gm
 		if (iter->second.IsValid() == false)
 			return;
 
-		PlayerMoveInputComponent* moveComponent = iter->second->GetComponent<PlayerMoveInputComponent>();
-		moveComponent->Input(directionX, isJump);
+		ServerPlayerMovementComponent* moveComponent = iter->second->GetComponent<ServerPlayerMovementComponent>();
+		moveComponent->ApplyInput(directionX, isJump);
 	}
 
 	Vector2 GameServerScene::GetPlayerPosition(PlayerId playerId)
@@ -45,6 +45,26 @@ namespace gm
 			return Vector2{};
 
 		return _playerList[playerId]->GetComponent<TransformComponent>()->GetPosition2D();
+	}
+
+	PlayerMotionState GameServerScene::GetPlayerMotionState(PlayerId playerId)
+	{
+		auto iter = _playerList.find(playerId);
+		if (iter == _playerList.end())
+			return PlayerMotionState::Idle;
+
+		ServerPlayerMovementComponent* movementComponent = iter->second->GetComponent<ServerPlayerMovementComponent>();
+		return movementComponent->GetMotionState();
+	}
+
+	PlayerFacingDirection GameServerScene::GetPlayerFacingDirection(PlayerId playerId)
+	{
+		auto iter = _playerList.find(playerId);
+		if (iter == _playerList.end())
+			return PlayerFacingDirection::Right;
+
+		ServerPlayerMovementComponent* movementComponent = iter->second->GetComponent<ServerPlayerMovementComponent>();
+		return movementComponent->GetFacingDirection();
 	}
 
 	void GameServerScene::OnInitialize()

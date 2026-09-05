@@ -52,6 +52,7 @@ namespace gm
 				_sceneManager.Tick(TickGroup::Movement, _fixedTime);
 				_physics.Simulate(*_gameServerScene, _fixedTime);
 				_sceneManager.EndFrame();
+				BroadcastPlayerStates();
 
 				_serverService.Tick();
 			}
@@ -99,7 +100,18 @@ namespace gm
 			break;
 
 		case PacketId::C2S_MoveRequest:
-			std::cout << "C2S_MoveRequest" << std::endl;
+		{
+			if (payload.size() != sizeof(C2SMoveRequest))
+				return;
+
+			PlayerId playerId = GetPlayerId(sessionId);
+			if (playerId == InvalidPlayerId)
+				return;
+
+			C2SMoveRequest packet{};
+			memcpy(&packet, payload.data(), sizeof(C2SMoveRequest));
+			_gameServerScene->ApplyMoveInput(playerId, packet.directionX, packet.isJump);
+		}
 			break;
 
 		default:
@@ -141,5 +153,31 @@ namespace gm
 		{
 			_serverService.Send(sessionId, static_cast<std::uint16_t>(PacketId::S2C_PlayerJoined), std::span<const std::byte>{payload});
 		}
+	}
+
+	void GameServerApplication::BroadcastPlayerStates()
+	{
+		for (const auto& [sessionId, playerInfo] : _playerIdList)
+		{
+			const Vector2 position = _gameServerScene->GetPlayerPosition(playerInfo.id);
+
+			S2CPlayerMoved packet{};
+			packet.playerId = playerInfo.id;
+			packet.motion = _gameServerScene->GetPlayerMotionState(playerInfo.id);
+			packet.facing = _gameServerScene->GetPlayerFacingDirection(playerInfo.id);
+			packet.positionX = position.x;
+			packet.positionY = position.y;
+
+			_serverService.Broadcast(static_cast<std::uint16_t>(PacketId::S2C_PlayerMoved), std::as_bytes(std::span{ &packet, 1 }));
+		}
+	}
+
+	PlayerId GameServerApplication::GetPlayerId(TcpSession::SessionId sessionId)
+	{
+		auto Iter = _playerIdList.find(sessionId);
+		if (Iter == _playerIdList.end())
+			return InvalidPlayerId;
+
+		return Iter->second.id;
 	}
 }

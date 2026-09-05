@@ -16,9 +16,11 @@ namespace gm
 		void		DestroyPlayer(PlayerId playerId);
 		void		ApplyMoveInput(PlayerId playerId, float directionX, bool isJump);
 
-		Vector2		GetPlayerPosition(PlayerId playerId);
+		Vector2					GetPlayerPosition(PlayerId playerId);
+		PlayerMotionState		GetPlayerMotionState(PlayerId playerId);
+		PlayerFacingDirection	GetPlayerFacingDirection(PlayerId playerId);
 
-		Vector2	GetDefaultPlayerSpawnPosition() { return _defaultPlayerSpawnPosition; }
+		Vector2		GetDefaultPlayerSpawnPosition() { return _defaultPlayerSpawnPosition; }
 
 	protected:
 		void	OnInitialize() override;

@@ -26,9 +26,11 @@ namespace gm
 		void	Run();
 
 	private:
-		void	HandlePacket(TcpSession::SessionId sessionId, PacketView packet);
-		void	SendAllPlayerList(TcpSession::SessionId target);
-		void	BroadCastPlayerJoin(PlayerId playerId, Vector2 position, std::span<const std::byte> nickName);
+		void		HandlePacket(TcpSession::SessionId sessionId, PacketView packet);
+		void		SendAllPlayerList(TcpSession::SessionId target);
+		void		BroadCastPlayerJoin(PlayerId playerId, Vector2 position, std::span<const std::byte> nickName);
+		void		BroadcastPlayerStates();
+		PlayerId	GetPlayerId(TcpSession::SessionId sessionId);
 
 	private:
 		struct PlayerInfo
