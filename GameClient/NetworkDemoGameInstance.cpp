@@ -237,11 +237,12 @@ namespace gm
 			const wchar_t* filePath = nullptr;
 		};
 
-		constexpr std::array<CueInfo, 3> CueInfos =
+		constexpr std::array<CueInfo, 4> CueInfos =
 		{
 			{	L"Title.BG", L"Resources/Sound/Title.mp3",
 				L"Title.Click", L"Resources/Sound/BtMouseClick.mp3",
-				L"Main.Jump", L"Resources/Sound/Jump.mp3"
+				L"Main.Jump", L"Resources/Sound/Jump.mp3",
+				L"Main.BGM", L"Resources/Sound/MainBGM.mp3",
 			},
 		};
 

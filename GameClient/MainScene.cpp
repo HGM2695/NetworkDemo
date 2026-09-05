@@ -16,6 +16,7 @@
 #include "GMEngine/Application.h"
 #include "GMEngine/Texture.h"
 #include "GMEngine/Resources.h"
+#include "GMEngine/AudioStatics.h"
 
 namespace gm
 {
@@ -90,5 +91,6 @@ namespace gm
 	void MainScene::OnEnter()
 	{
 		GetCameraManager()->SetActiveCamera(L"MainCamera");
+		PlayBGM(L"Main.BGM");
 	}
 }
