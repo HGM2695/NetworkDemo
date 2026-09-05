@@ -1,4 +1,6 @@
 #include "GameServerApplication.h"
+#include "GameServerScene.h"
+
 #include <iostream>
 
 #include "GameProtocol/GamePackets.h"
@@ -23,6 +25,11 @@ namespace gm
 			return 0;
 		}
 
+		_gameServerScene = static_cast<GameServerScene*>(_sceneManager.CreateScene<GameServerScene>(L"GameServerScene"));
+		if (_gameServerScene == nullptr)
+			return false;
+		_sceneManager.RequestSceneChange(L"GameServerScene");
+
 		return true;
 	}
 
@@ -33,7 +40,19 @@ namespace gm
 			_timeSystem.Tick();
 			const float deltaTime = _timeSystem.GetDeltaTime();
 
-			_serverService.Tick();
+			_accTime += deltaTime;
+			while (_accTime >= _fixedTime)
+			{
+				_accTime -= _fixedTime;
+
+				_sceneManager.BeginFrame();
+				_sceneManager.Tick(TickGroup::GameLogic, _fixedTime);
+				_sceneManager.Tick(TickGroup::Movement, _fixedTime);
+				_physics.Simulate(*_gameServerScene, _fixedTime);
+				_sceneManager.EndFrame();
+
+				_serverService.Tick();
+			}
 		}
 	}
 

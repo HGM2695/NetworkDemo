@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClCompile Include="GameServerApplication.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="GameServerScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GameProtocol\GameProtocol.vcxproj">
@@ -147,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameServerApplication.h" />
+    <ClInclude Include="GameServerScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -9,8 +9,10 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameServerApplication.cpp" />
+    <ClCompile Include="GameServerScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameServerApplication.h" />
+    <ClInclude Include="GameServerScene.h" />
   </ItemGroup>
 </Project>
