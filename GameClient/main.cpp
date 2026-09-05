@@ -13,8 +13,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     desc.instance = hInstance;
     desc.title = L"Maple Chat";
     desc.className = L"MapleChatWindowClass";
-    desc.width = 1600;
-    desc.height = 900;
+    desc.width = 1920;
+    desc.height = 1080;
     desc.showCommand = nCmdShow;
 
     GM_ASSERT_RETURN_VAL(APPLICATION.Initialize(desc, std::make_unique<gm::NetworkDemoGameInstance>()), -1, "Application 초기화에 실패했습니다.");

@@ -10,6 +10,10 @@
 #include "GMEngine/TransformComponent.h"
 #include "GMEngine/SpriteAnimator.h"
 #include "GMEngine/WidgetComponent.h"
+#include "GMEngine/SpriteComponent.h"
+#include "GMEngine/Application.h"
+#include "GMEngine/Texture.h"
+#include "GMEngine/Resources.h"
 
 namespace gm
 {
@@ -60,6 +64,15 @@ namespace gm
 
 		camera->SetOrthographic(width, height);
 		GetCameraManager()->RegisterCamera(L"MainCamera", camera);
+
+		GameObject* backGround = SpawnGameObject<GameObject>();
+		TransformComponent* transform = backGround->GetComponent<TransformComponent>();
+		transform->SetPosition(Vector3{ 0.f, 0.f, 100.f });
+		transform->SetScale(Vector2{ 1920, 1080.f });
+		
+		SpriteComponent* sprite = backGround->AddComponent<SpriteComponent>();
+		std::shared_ptr<Texture> texture = APPLICATION.GetResources().Find<Texture>(L"florida");
+		sprite->SetTexture(texture);
 	}
 
 	void MainScene::OnEnter()

@@ -162,7 +162,8 @@ namespace gm
 			L"Resources/Title/BG.png",
 			L"Resources/Character/Idle.png",
 			L"Resources/Character/Jump.png",
-			L"Resources/Character/Walk.png"
+			L"Resources/Character/Walk.png",
+			L"Resources/BG/florida.png"
 		};
 
 		Resources& resources = APPLICATION.GetResources();
