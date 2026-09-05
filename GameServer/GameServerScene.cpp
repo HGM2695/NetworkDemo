@@ -3,6 +3,7 @@
 #include "GMEngine/GameObject.h"
 #include "GMEngine/Rigidbody2DComponent.h"
 #include "GMEngine/BoxCollider2DComponent.h"
+#include "GMEngine/TransformComponent.h"
 
 #include "PlayerMoveInputComponent.h"
 
@@ -10,7 +11,7 @@ namespace gm
 {
 	void GameServerScene::SpawnPlayer(PlayerId playerId)
 	{
-		GameObject* player = SpawnGameObject<GameObject>(Vector3{ _playerSpawnPosition.x, _playerSpawnPosition.y, 0.f });
+		GameObject* player = SpawnGameObject<GameObject>(Vector3{ _defaultPlayerSpawnPosition.x, _defaultPlayerSpawnPosition.y, 0.f });
 		player->AddComponent<Rigidbody2DComponent>();
 		BoxCollider2DComponent* collider = player->AddComponent<BoxCollider2DComponent>();
 		collider->SetSize(Vector2{ 60.f, 100.f });
@@ -36,6 +37,14 @@ namespace gm
 
 		PlayerMoveInputComponent* moveComponent = iter->second->GetComponent<PlayerMoveInputComponent>();
 		moveComponent->Input(directionX, isJump);
+	}
+
+	Vector2 GameServerScene::GetPlayerPosition(PlayerId playerId)
+	{
+		if (_playerList.find(playerId) == _playerList.end())
+			return Vector2{};
+
+		return _playerList[playerId]->GetComponent<TransformComponent>()->GetPosition2D();
 	}
 
 	void GameServerScene::OnInitialize()

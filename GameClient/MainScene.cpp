@@ -5,9 +5,45 @@
 #include "GMEngine/CameraManager.h"
 #include "GMEngine/Application.h"
 #include "GMEngine/PathUtil.h"
+#include "GMEngine/AnimatedSpriteComponent.h"
+#include "GMEngine/TransformComponent.h"
+#include "GMEngine/SpriteAnimator.h"
 
 namespace gm
 {
+	void MainScene::SpawnPlayer(PlayerId playerId, Vector2 position, const std::wstring& nickName)
+	{
+		GameObject* player = SpawnGameObject<GameObject>(Vector3{ position.x, position.y, 0.f});
+		player->GetComponent<TransformComponent>()->SetScale(Vector3{ 400.f, 400.f, 1.f });
+		AnimatedSpriteComponent* spriteComponent = player->AddComponent<AnimatedSpriteComponent>();
+		SpriteAnimator& animator = spriteComponent->GetAnimator();
+		GM_ASSERT_RETURN(animator.AddClip(L"Idle", L"Player.Idle"), " 플레이어 Idle 클립 추가 실패");
+		GM_ASSERT_RETURN(animator.AddClip(L"Jump", L"Player.Jump"), " 플레이어 Jump 클립 추가 실패");
+		GM_ASSERT_RETURN(animator.AddClip(L"Walk", L"Player.Walk"), " 플레이어 Walk 클립 추가 실패");
+		GM_ASSERT_RETURN(animator.Play(L"Idle"), "플레이어 Idle 애니메이션 재생 실패");
+
+		_playerList[playerId] = player->GetWeakPtr();
+	}
+
+	void MainScene::DestroyPlayer(PlayerId playerId)
+	{
+		auto Iter = _playerList.find(playerId);
+		if (Iter == _playerList.end())
+			return;
+
+		Iter->second->Destroy();
+		_playerList.erase(Iter);
+	}
+
+	void MainScene::SetPlayerPosition(PlayerId playerId, Vector2 position)
+	{
+		auto Iter = _playerList.find(playerId);
+		if (Iter == _playerList.end())
+			return;
+
+		Iter->second->GetComponent<TransformComponent>()->SetPosition2D(position);
+	}
+
 	void MainScene::OnInitialize()
 	{
 		GameObject* cameraObject = SpawnGameObject<GameObject>();

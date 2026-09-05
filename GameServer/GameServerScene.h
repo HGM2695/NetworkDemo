@@ -12,15 +12,19 @@ namespace gm
 	class GameServerScene : public Scene
 	{
 	public:
-		void	SpawnPlayer(PlayerId playerId);
-		void	DestroyPlayer(PlayerId playerId);
-		void	ApplyMoveInput(PlayerId playerId, float directionX, bool isJump);
+		void		SpawnPlayer(PlayerId playerId);
+		void		DestroyPlayer(PlayerId playerId);
+		void		ApplyMoveInput(PlayerId playerId, float directionX, bool isJump);
+
+		Vector2		GetPlayerPosition(PlayerId playerId);
+
+		Vector2	GetDefaultPlayerSpawnPosition() { return _defaultPlayerSpawnPosition; }
 
 	protected:
 		void	OnInitialize() override;
 
 	private:
 		std::unordered_map<PlayerId, WeakGameObjectPtr> _playerList;
-		const Vector2									_playerSpawnPosition = { 0.f, -200.f };
+		const Vector2									_defaultPlayerSpawnPosition = { 0.f, -200.f };
 	};
 }

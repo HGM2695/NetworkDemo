@@ -29,34 +29,36 @@ namespace gm
 
     struct S2CJoinAccepted
     {
-        PlayerId            playerId = InvalidPlayerId;
+        PlayerId        playerId = InvalidPlayerId;
     };
 
     struct S2CPlayerJoinedPrefix
     {
-        PlayerId            playerId = InvalidPlayerId;
-        NetworkPosition2D   position{};
+        PlayerId        playerId = InvalidPlayerId;
+        float           positionX = 0.f;
+        float           positionY = 0.f;
     };
 
     struct S2CPlayerLeft
     {
-        PlayerId            playerId = InvalidPlayerId;
+        PlayerId        playerId = InvalidPlayerId;
     };
 
     struct C2SMoveRequest
     {
-        float               directionX = 0.f;
-        float               directionY = 0.f;
+        float           directionX = 0.f;
+        float           directionY = 0.f;
     };
 
     struct S2CPlayerMoved
     {
-        PlayerId            playerId = InvalidPlayerId;
-        NetworkPosition2D   position{};
+        PlayerId        playerId = InvalidPlayerId;
+        float           positionX = 0.f;
+        float           positionY = 0.f;
     };
 
     struct S2CChatBroadcastPrefix
     {
-        PlayerId            senderId = InvalidPlayerId;
+        PlayerId        senderId = InvalidPlayerId;
     };
 }

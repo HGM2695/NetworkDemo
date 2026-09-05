@@ -9,6 +9,10 @@
 
 #include "GameProtocol/GameProtocolTypes.h"
 
+#include <cstddef>
+#include <cstdint>
+#include <span>
+#include <string>
 #include <unordered_map>
 
 namespace gm
@@ -22,15 +26,23 @@ namespace gm
 		void	Run();
 
 	private:
-		void	HandlePacket(TcpSession::SessionId id, PacketView packet);
+		void	HandlePacket(TcpSession::SessionId sessionId, PacketView packet);
+		void	SendAllPlayerList(TcpSession::SessionId target);
+		void	BroadCastPlayerJoin(PlayerId playerId, Vector2 position, std::span<const std::byte> nickName);
 
 	private:
+		struct PlayerInfo
+		{
+			PlayerId		id;
+			std::wstring	nickName;
+		};
+
 		WinsockRuntime		_winsockRuntime;
 		TcpServerService	_serverService;
 
-		std::unordered_map<TcpSession::SessionId, PlayerId> _playerIdList{};
-		PlayerId											_nextPlayerId = 1;
-		std::uint16_t										_port = 49900;
+		std::unordered_map<TcpSession::SessionId, PlayerInfo>	_playerIdList{};
+		PlayerId												_nextPlayerId = 1;
+		std::uint16_t											_port = 49900;
 
 		TimeSystem			_timeSystem;
 		SceneManager		_sceneManager;

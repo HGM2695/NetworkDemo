@@ -13,6 +13,8 @@
 
 namespace gm
 {
+	class MainScene;
+
 	class NetworkDemoGameInstance : public GameInstance
 	{
 	public:
@@ -23,11 +25,11 @@ namespace gm
 		void	OnTick(float deltaTime) override;
 
 	private:
+		void	HandlePacket(PacketView packet);
+		bool	SendJoinPacket();
+
 		void	SetupScenes();
 		void	LoadResources();
-		void	HandlePacket(PacketView packet);
-
-		bool	SendJoinPacket();
 
 	private:
 		enum class State
@@ -43,8 +45,9 @@ namespace gm
 		TcpClientService	_clientService{};
 
 		State				_state{};
-		std::string			_clientNickname{};
 
-		PlayerId			_clientPlayerId{};
+		MainScene*			_mainScene{};
+		PlayerId			_playerId{};
+		std::string			_playerNickname{};
 	};
 }
