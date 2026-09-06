@@ -15,6 +15,9 @@
     <Filter Include="UserWidget">
       <UniqueIdentifier>{706e2c8b-3a96-492b-8101-9850bb8bf062}</UniqueIdentifier>
     </Filter>
+    <ClInclude Include="LeaveConfirmWidget.h">
+      <Filter>UserWidget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientPlayerAnimationComponent.cpp" />
@@ -40,6 +43,9 @@
       <Filter>UserWidget</Filter>
     </ClInclude>
     <ClInclude Include="ClientPlayerInputComponent.h" />
+    <ClCompile Include="LeaveConfirmWidget.cpp">
+      <Filter>UserWidget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameClient.rc">

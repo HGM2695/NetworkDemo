@@ -21,6 +21,7 @@ namespace gm
 	public:
 		bool	RequestJoin(const std::wstring& address, std::uint16_t portNumber, const std::wstring& nickname);
 		void	RequestMove(float directionX, bool jump);
+		void	RequestDisconnect();
 
 	protected:
 		bool	OnInitialize() override;

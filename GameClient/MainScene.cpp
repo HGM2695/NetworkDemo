@@ -1,9 +1,12 @@
 #include "MainScene.h"
 #include "NameTagWidget.h"
+#include "LeaveConfirmWidget.h"
+#include "NetworkDemoGameInstance.h"
 #include "ClientPlayerAnimationComponent.h"
 #include "ClientPlayerInputComponent.h"
 
 #include "GMEngine/GameObject.h"
+#include "GMEngine/Input.h"
 #include "GMEngine/CameraComponent.h"
 #include "GMEngine/CameraManager.h"
 #include "GMEngine/Application.h"
@@ -17,6 +20,7 @@
 #include "GMEngine/Texture.h"
 #include "GMEngine/Resources.h"
 #include "GMEngine/AudioStatics.h"
+#include "GMEngine/WidgetManager.h"
 
 namespace gm
 {
@@ -78,6 +82,14 @@ namespace gm
 		animationComponent->SetFacingDirection(facingDirection);
 	}
 
+	void MainScene::ShowLeaveConfirmation()
+	{
+		if (_leaveConfirmWidget == nullptr)
+			return;
+
+		_leaveConfirmWidget->SetVisible(true);
+	}
+
 	void MainScene::OnInitialize()
 	{
 		GameObject* cameraObject = SpawnGameObject<GameObject>();
@@ -99,9 +111,33 @@ namespace gm
 		sprite->SetTexture(texture);
 	}
 
+	void MainScene::OnTick(float)
+	{
+		if (APPLICATION.GetInput().IsKeyDown(KeyCode::Escape) == false)
+			return;
+
+		WidgetManager& widgetManager = APPLICATION.GetWidgetManager();
+		if (widgetManager.HasKeyInputFocus())
+		{
+			widgetManager.ClearKeyInputFocus();
+			return;
+		}
+
+		ShowLeaveConfirmation();
+	}
+
 	void MainScene::OnEnter()
 	{
 		GetCameraManager()->SetActiveCamera(L"MainCamera");
+		_leaveConfirmWidget = APPLICATION.GetWidgetManager().AddUserWidget<LeaveConfirmWidget>();
+		_leaveConfirmWidget->SetVisible(false);
+		_leaveConfirmWidget->OnLeaveConfirmed.Subscribe(_leaveConfirmedConnection, [](const LeaveConfirmedEvent&) { static_cast<NetworkDemoGameInstance&>(APPLICATION.GetGameInstance()).RequestDisconnect(); });
 		PlayBGM(L"Main.BGM");
+	}
+
+	void MainScene::OnExit()
+	{
+		_leaveConfirmedConnection.Disconnect();
+		_leaveConfirmWidget = nullptr;
 	}
 }

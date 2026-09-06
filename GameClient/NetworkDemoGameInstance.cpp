@@ -11,7 +11,6 @@
 #include "GMEngine/SpriteAnimationClip.h"
 #include "GMEngine/StringUtil.h"
 #include "GMEngine/Texture.h"
-#include "GMEngine/Input.h"
 
 #include "NetworkCore/Ipv4Endpoint.h"
 
@@ -57,6 +56,11 @@ namespace gm
 		_clientService.Send(ToUint16(PacketId::C2S_MoveRequest), std::as_bytes(std::span{ &packet, 1 }));
 	}
 
+	void NetworkDemoGameInstance::RequestDisconnect()
+	{
+		_clientService.Disconnect();
+	}
+
 	bool NetworkDemoGameInstance::OnInitialize()
 	{
 		if (_winsockRuntime.Initialize() == false)
@@ -86,10 +90,6 @@ namespace gm
 			_playerNickname.clear();
 		}
 
-		if (APPLICATION.GetInput().IsKeyDown(KeyCode::Escape))
-		{
-			_clientService.Disconnect();
-		}
 	}
 
 	void NetworkDemoGameInstance::HandlePacket(TcpSession::SessionId, PacketView packet)
