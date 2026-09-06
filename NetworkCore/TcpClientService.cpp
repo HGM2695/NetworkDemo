@@ -6,7 +6,7 @@ namespace gm
 {
 	static constexpr TcpSession::SessionId ClientDefaultSessionId = 1;
 
-	bool TcpClientService::Initialize(ClientPacketHandler packetHandler)
+	bool TcpClientService::Initialize(TcpSession::PacketHandler packetHandler)
 	{
 		if (packetHandler == nullptr)
 			return false;
@@ -32,11 +32,7 @@ namespace gm
 				return;
 			}
 
-			_session.emplace(ClientDefaultSessionId, std::move(socket),
-				[packetHandler = _packetHandler](TcpSession::SessionId, PacketView packet)
-				{
-					packetHandler(packet);
-				});
+			_session.emplace(ClientDefaultSessionId, std::move(socket), _packetHandler);
 			_state = State::Connected;
 		}
 

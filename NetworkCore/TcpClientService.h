@@ -19,10 +19,8 @@ namespace gm
 			Connected,
 		};
 
-		using ClientPacketHandler = std::function<void(PacketView)>;
-
 	public:
-		bool	Initialize(ClientPacketHandler packetHandler);
+		bool	Initialize(TcpSession::PacketHandler packetHandler);
 		void	Tick();
 
 		bool	Send(std::uint16_t packetId, std::span<const std::byte> payload);
@@ -36,6 +34,6 @@ namespace gm
 
 		TcpConnector				_connector{};
 		std::optional<TcpSession>	_session;
-		ClientPacketHandler			_packetHandler{};
+		TcpSession::PacketHandler	_packetHandler{};
 	};
 }

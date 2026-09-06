@@ -61,7 +61,7 @@ namespace gm
 		if (_winsockRuntime.Initialize() == false)
 			return false;
 
-		if (_clientService.Initialize([this](PacketView packet) { HandlePacket(packet);}) == false)
+		if (_clientService.Initialize([this](TcpSession::SessionId id, PacketView packet) { HandlePacket(id, packet);}) == false)
 			return false;
 
 		LoadResources();
@@ -86,7 +86,7 @@ namespace gm
 		}
 	}
 
-	void NetworkDemoGameInstance::HandlePacket(PacketView packet)
+	void NetworkDemoGameInstance::HandlePacket(TcpSession::SessionId, PacketView packet)
 	{
 		PacketId packetId = static_cast<PacketId>(packet.header.packetId);
 

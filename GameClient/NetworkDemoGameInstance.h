@@ -5,6 +5,7 @@
 #include "NetworkCore/WinsockRuntime.h"
 #include "NetworkCore/TcpClientService.h"
 #include "NetworkCore/PacketTypes.h"
+#include "NetworkCore/TcpSession.h"
 
 #include "GameProtocol/GameProtocolTypes.h"
 
@@ -26,7 +27,7 @@ namespace gm
 		void	OnTick(float deltaTime) override;
 
 	private:
-		void	HandlePacket(PacketView packet);
+		void	HandlePacket(TcpSession::SessionId, PacketView packet);
 		bool	SendJoinPacket();
 
 		void	SetupScenes();
