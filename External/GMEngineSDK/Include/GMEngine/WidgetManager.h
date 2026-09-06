@@ -55,6 +55,7 @@ namespace gm
 		void SetKeyInputFocus(Widget& widget);
 		void ClearKeyInputFocus();
 		bool IsKeyInputFocus(const Widget& widget) const { return _keyInputFocusedWidget == &widget; }
+		bool HasKeyInputFocus() const { return _keyInputFocusedWidget != nullptr; }
 
 		void SetVisible(bool isVisible) { _visible = isVisible; }
 		bool IsVisible() const { return _visible; }

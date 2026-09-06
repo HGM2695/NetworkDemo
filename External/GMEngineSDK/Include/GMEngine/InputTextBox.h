@@ -22,6 +22,8 @@ namespace gm
 		void				SetText(const std::wstring& text);
 		const std::wstring& GetText() const { return _text; }
 		void				ClearText();
+		void				SetActive(bool isActive);
+		bool				IsActive() const;
 
 		EventPublisher<InputTextBox, InputTextSubmittedEvent> OnTextSubmitted;
 
@@ -36,19 +38,15 @@ namespace gm
 		void				CommitCurrentTextInput();
 		void				EraseLastCharacter();
 		void				UpdateDisplayedText();
-		void				UpdateCursor(float deltaTime, bool isFocus);
-		void				ResetCursorBlink();
 
 	private:
 		TextBlock*			_textBlock = nullptr;
-		Border*				_cursor = nullptr;
 		std::wstring		_text{};
 		WidgetGeometry		_cachedGeometry{};
 		std::size_t			_maxLength = 256;
 		float				_horizontalPadding = 8.f;
 		float				_displayedTextWidth = 0.f;
-		float				_cursorBlinkElapsed = 0.f;
-		float				_cursorBlinkInterval = 0.5f;
+		Color				_inactiveOutlineColor = Colors::Black;
 		bool				_hadFocus = false;
 	};
 }
