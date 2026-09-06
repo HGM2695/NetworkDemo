@@ -11,6 +11,7 @@
 #include "GMEngine/SpriteAnimationClip.h"
 #include "GMEngine/StringUtil.h"
 #include "GMEngine/Texture.h"
+#include "GMEngine/Input.h"
 
 #include "NetworkCore/Ipv4Endpoint.h"
 
@@ -53,7 +54,7 @@ namespace gm
 		packet.directionX = directionX;
 		packet.isJump = jump ? 1 : 0;
 
-		_clientService.Send(static_cast<uint16_t>(PacketId::C2S_MoveRequest), std::as_bytes(std::span{ &packet, 1 }));
+		_clientService.Send(ToUint16(PacketId::C2S_MoveRequest), std::as_bytes(std::span{ &packet, 1 }));
 	}
 
 	bool NetworkDemoGameInstance::OnInitialize()
@@ -61,7 +62,7 @@ namespace gm
 		if (_winsockRuntime.Initialize() == false)
 			return false;
 
-		if (_clientService.Initialize([this](TcpSession::SessionId id, PacketView packet) { HandlePacket(id, packet);}) == false)
+		if (_clientService.Initialize([this](TcpSession::SessionId id, PacketView packet) { HandlePacket(id, packet); }, [this](TcpSession::SessionId id, TcpSession::DisconnectReason reason) { HandleSessionClose(id, reason); }) == false)
 			return false;
 
 		LoadResources();
@@ -84,21 +85,27 @@ namespace gm
 			_state = State::Idle;
 			_playerNickname.clear();
 		}
+
+		if (APPLICATION.GetInput().IsKeyDown(KeyCode::Escape))
+		{
+			_clientService.Disconnect();
+		}
 	}
 
 	void NetworkDemoGameInstance::HandlePacket(TcpSession::SessionId, PacketView packet)
 	{
 		PacketId packetId = static_cast<PacketId>(packet.header.packetId);
+		std::span<const std::byte> payload = packet.payload;
 
 		switch (packetId)
 		{
 		case gm::PacketId::S2C_JoinAccepted:
 		{
-			if (packet.payload.size() != sizeof(S2CJoinAccepted))
+			if (payload.size() != sizeof(S2CJoinAccepted))
 				return;
 
 			S2CJoinAccepted joinAccepted{};
-			memcpy(&joinAccepted, packet.payload.data(), sizeof(S2CJoinAccepted));
+			memcpy(&joinAccepted, payload.data(), sizeof(S2CJoinAccepted));
 
 			_playerId = joinAccepted.playerId;
 			_state = State::Joined;
@@ -108,7 +115,7 @@ namespace gm
 		}
 		case gm::PacketId::S2C_PlayerJoined:
 		{
-			auto view = packet.payload;
+			auto view = payload;
 			const std::size_t payloadSize = view.size();
 			const std::size_t prefixSize = sizeof(S2CPlayerJoinedPrefix);
 			if (payloadSize < prefixSize)
@@ -119,7 +126,7 @@ namespace gm
 				return;
 
 			S2CPlayerJoinedPrefix prefix{};
-			memcpy(&prefix, packet.payload.data(), sizeof(prefix));
+			memcpy(&prefix, payload.data(), sizeof(prefix));
 
 			std::string utf8NickName;
 			utf8NickName.resize(nickNameSize);
@@ -131,23 +138,28 @@ namespace gm
 		}
 		case gm::PacketId::S2C_PlayerLeft:
 		{
+			if (payload.size() != sizeof(S2CPlayerLeft))
+				return;
+
+			S2CPlayerLeft packet{};
+			memcpy(&packet, payload.data(), sizeof(packet));
+			_mainScene->DestroyPlayer(packet.playerId);
 
 			break;
 		}
 		case gm::PacketId::S2C_PlayerMoved:
 		{
-			if (packet.payload.size() != sizeof(S2CPlayerMoved))
+			if (payload.size() != sizeof(S2CPlayerMoved))
 				return;
 
 			S2CPlayerMoved playerMoved{};
-			memcpy(&playerMoved, packet.payload.data(), sizeof(playerMoved));
+			memcpy(&playerMoved, payload.data(), sizeof(playerMoved));
 			_mainScene->SetPlayerState(playerMoved.playerId, Vector2{ playerMoved.positionX, playerMoved.positionY }, playerMoved.motion, playerMoved.facing);
 
 			break;
 		}
 		case gm::PacketId::S2C_ChatBroadcast:
 		{
-
 			break;
 		}
 		default:
@@ -155,10 +167,19 @@ namespace gm
 		}
 	}
 
+	void NetworkDemoGameInstance::HandleSessionClose(TcpSession::SessionId, TcpSession::DisconnectReason)
+	{
+		_mainScene->ClearPlayers();
+		_playerId = InvalidPlayerId;
+		_playerNickname.clear();
+		_state = State::Idle;
+		APPLICATION.GetSceneManager().RequestSceneChange(L"TitleScene");
+	}
+
 	bool NetworkDemoGameInstance::SendJoinPacket()
 	{
 		const std::span<const std::byte> view = std::as_bytes(std::span{ _playerNickname });
-		return _clientService.Send(static_cast<uint16_t>(PacketId::C2S_JoinRequest), view);
+		return _clientService.Send(ToUint16(PacketId::C2S_JoinRequest), view);
 	}
 
 	void NetworkDemoGameInstance::SetupScenes()

@@ -28,6 +28,7 @@ namespace gm
 
 	private:
 		void	HandlePacket(TcpSession::SessionId, PacketView packet);
+		void	HandleSessionClose(TcpSession::SessionId sessionId, TcpSession::DisconnectReason reason);
 		bool	SendJoinPacket();
 
 		void	SetupScenes();

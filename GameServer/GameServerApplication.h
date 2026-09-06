@@ -27,9 +27,11 @@ namespace gm
 
 	private:
 		void		HandlePacket(TcpSession::SessionId sessionId, PacketView packet);
+		void		HandleSessionClose(TcpSession::SessionId sessionId, TcpSession::DisconnectReason reason);
 		void		SendAllPlayerList(TcpSession::SessionId target);
 		void		BroadCastPlayerJoin(PlayerId playerId, Vector2 position, std::span<const std::byte> nickName);
 		void		BroadcastPlayerStates();
+		void		BroadcastPlayerLeft(PlayerId playerId);
 		PlayerId	GetPlayerId(TcpSession::SessionId sessionId);
 
 	private:
@@ -42,7 +44,7 @@ namespace gm
 		WinsockRuntime		_winsockRuntime;
 		TcpServerService	_serverService;
 
-		std::unordered_map<TcpSession::SessionId, PlayerInfo>	_playerIdList{};
+		std::unordered_map<TcpSession::SessionId, PlayerInfo>	_playerInfoList{};
 		PlayerId												_nextPlayerId = 1;
 		std::uint16_t											_port = 49900;
 

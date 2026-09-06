@@ -11,7 +11,7 @@ namespace gm
 	class TcpServerService
 	{
 	public:
-		bool					Initialize(std::uint16_t port, TcpSession::PacketHandler packetHandler);
+		bool					Initialize(std::uint16_t port, TcpSession::PacketHandler packetHandler, TcpSession::SessionCloseHandler closeHandler);
 		void					Tick();
 
 		bool					Send(TcpSession::SessionId sessionId, std::uint16_t packetId, std::span<const std::byte> payload);
@@ -29,6 +29,8 @@ namespace gm
 
 		std::vector<TcpSession>		_sessionList;
 		TcpSession::SessionId		_nextSessionId = 1;
-		TcpSession::PacketHandler	_sessionPacketHandler{};
+
+		TcpSession::PacketHandler		_sessionPacketHandler{};
+		TcpSession::SessionCloseHandler	_sessionCloseHandler{};
 	};
 }

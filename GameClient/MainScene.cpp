@@ -52,6 +52,17 @@ namespace gm
 		_playerList.erase(Iter);
 	}
 
+	void MainScene::ClearPlayers()
+	{
+		for (auto& [playerId, player] : _playerList)
+		{
+			if (player.IsValid())
+				player->Destroy();
+		}
+
+		_playerList.clear();
+	}
+
 	void MainScene::SetPlayerState(PlayerId playerId, Vector2 position, PlayerMotionState motionState, PlayerFacingDirection facingDirection)
 	{
 		auto Iter = _playerList.find(playerId);

@@ -20,7 +20,7 @@ namespace gm
 		};
 
 	public:
-		bool	Initialize(TcpSession::PacketHandler packetHandler);
+		bool	Initialize(TcpSession::PacketHandler packetHandler, TcpSession::SessionCloseHandler closeHandler);
 		void	Tick();
 
 		bool	Send(std::uint16_t packetId, std::span<const std::byte> payload);
@@ -28,12 +28,16 @@ namespace gm
 		void	Disconnect();
 
 		State	GetState() const { return _state; }
+
+	private:
+		void	CloseSession(TcpSession::DisconnectReason reason);
 		
 	private:
 		State						_state = State::Idle;
 
-		TcpConnector				_connector{};
-		std::optional<TcpSession>	_session;
-		TcpSession::PacketHandler	_packetHandler{};
+		TcpConnector						_connector{};
+		std::optional<TcpSession>			_session;
+		TcpSession::PacketHandler			_packetHandler{};
+		TcpSession::SessionCloseHandler		_sessionCloseHandler{};
 	};
 }

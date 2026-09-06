@@ -21,6 +21,8 @@ namespace gm
         S2C_ChatBroadcast,
     };
 
+    inline constexpr std::uint16_t ToUint16(PacketId id) { return static_cast<std::uint16_t>(id); }
+
     // C2S_JoinRequest: payload 전체가 UTF-8 nickname bytes
     // C2S_ChatRequest: payload 전체가 UTF-8 message bytes
 

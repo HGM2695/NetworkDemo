@@ -19,10 +19,19 @@ namespace gm
 			Invalid
 		};
 
+		enum class DisconnectReason
+		{
+			PeerClosed,
+			IoFailed,
+			InvalidPacket,
+			LocalRequest,
+		};
+
 		using SessionId = std::uint32_t;
 		static constexpr SessionId InvalidSessionId = 0;
 
 		using PacketHandler = std::function<void(SessionId, PacketView)>;
+		using SessionCloseHandler = std::function<void(SessionId, DisconnectReason)>;
 
 	public:
 		TcpSession(SessionId sessionId, TcpSocket socket, PacketHandler packetHandler);
@@ -46,8 +55,8 @@ namespace gm
 		TcpSocket		_socket{};
 		ByteBuffer		_sendBuffer{ MaxBufferSize };
 		ByteBuffer		_receiveBuffer{ MaxBufferSize };
-		PacketHandler	_packetHandler{};
 
-		bool			_pendingSend{};
+		PacketHandler		_packetHandler{};
+		bool				_pendingSend{};
 	};
 }

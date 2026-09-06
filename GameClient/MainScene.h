@@ -15,6 +15,7 @@ namespace gm
 	public:
 		void SpawnPlayer(PlayerId playerId, Vector2 position, const std::wstring& nickName, bool clientPlayer);
 		void DestroyPlayer(PlayerId playerId);
+		void ClearPlayers();
 		void SetPlayerState(PlayerId playerId, Vector2 position, PlayerMotionState motionState, PlayerFacingDirection facingDirection);
 
 	protected:

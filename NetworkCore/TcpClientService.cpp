@@ -6,12 +6,16 @@ namespace gm
 {
 	static constexpr TcpSession::SessionId ClientDefaultSessionId = 1;
 
-	bool TcpClientService::Initialize(TcpSession::PacketHandler packetHandler)
+	bool TcpClientService::Initialize(TcpSession::PacketHandler packetHandler, TcpSession::SessionCloseHandler closeHandler)
 	{
 		if (packetHandler == nullptr)
 			return false;
 
+		if (closeHandler == nullptr)
+			return false;
+
 		_packetHandler = std::move(packetHandler);
+		_sessionCloseHandler = std::move(closeHandler);
 		_state = State::Idle;
 		return true;
 	}
@@ -50,15 +54,20 @@ namespace gm
 
 		if (selectResult == SOCKET_ERROR)
 		{
-			Disconnect();
+			CloseSession(TcpSession::DisconnectReason::IoFailed);
 			return;
 		}
 
 		const bool readable = FD_ISSET(socket, &readFDS) != 0;
 		const bool writable = FD_ISSET(socket, &writeFDS) != 0;
 
-		if (_session->Tick(readable, writable) != TcpSession::PollResult::Alive)
-			Disconnect();
+		const TcpSession::PollResult result = _session->Tick(readable, writable);
+		if (result == TcpSession::PollResult::Closed)
+			CloseSession(TcpSession::DisconnectReason::PeerClosed);
+		else if (result == TcpSession::PollResult::Failed)
+			CloseSession(TcpSession::DisconnectReason::IoFailed);
+		else if (result == TcpSession::PollResult::Invalid)
+			CloseSession(TcpSession::DisconnectReason::InvalidPacket);
 	}
 
 	bool TcpClientService::Send(std::uint16_t packetId, std::span<const std::byte> payload)
@@ -86,7 +95,20 @@ namespace gm
 
 	void TcpClientService::Disconnect()
 	{
+		if (_session.has_value())
+		{
+			CloseSession(TcpSession::DisconnectReason::LocalRequest);
+			return;
+		}
+
+		_state = State::Idle;
+	}
+
+	void TcpClientService::CloseSession(TcpSession::DisconnectReason reason)
+	{
+		const TcpSession::SessionId sessionId = _session->GetSessionId();
 		_session.reset();
 		_state = State::Idle;
+		_sessionCloseHandler(sessionId, reason);
 	}
 }

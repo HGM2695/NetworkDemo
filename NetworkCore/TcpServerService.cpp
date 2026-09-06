@@ -7,7 +7,7 @@
 
 namespace gm
 {
-	bool TcpServerService::Initialize(std::uint16_t port, TcpSession::PacketHandler packetHandler)
+	bool TcpServerService::Initialize(std::uint16_t port, TcpSession::PacketHandler packetHandler, TcpSession::SessionCloseHandler closeHandler)
 	{
 		if (_listener.IsListening())
 			return false;
@@ -16,6 +16,9 @@ namespace gm
 			return false;
 		
 		if (packetHandler == nullptr)
+			return false;
+
+		if (closeHandler == nullptr)
 			return false;
 
 		_port = port;
@@ -27,6 +30,7 @@ namespace gm
 		}
 
 		_sessionPacketHandler = std::move(packetHandler);
+		_sessionCloseHandler = std::move(closeHandler);
 
 		return true;
 	}
@@ -73,7 +77,17 @@ namespace gm
 
 			TcpSession::PollResult result = iter->Tick(readable, writable);
 			if (result != TcpSession::PollResult::Alive)
+			{
+				const TcpSession::SessionId sessionId = iter->GetSessionId();
+				TcpSession::DisconnectReason reason = TcpSession::DisconnectReason::IoFailed;
+				if (result == TcpSession::PollResult::Closed)
+					reason = TcpSession::DisconnectReason::PeerClosed;
+				else if (result == TcpSession::PollResult::Invalid)
+					reason = TcpSession::DisconnectReason::InvalidPacket;
+
 				iter = _sessionList.erase(iter);
+				_sessionCloseHandler(sessionId, reason);
+			}
 			else
 				++iter;
 		}

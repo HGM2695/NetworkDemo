@@ -21,6 +21,10 @@ namespace gm
 			[this](TcpSession::SessionId id, PacketView packet)
 			{
 				HandlePacket(id, packet);
+			},
+			[this](TcpSession::SessionId id, TcpSession::DisconnectReason reason)
+			{
+				HandleSessionClose(id, reason);
 			}) == false)
 		{
 			std::cout << "Server Service 초기화 실패" << std::endl;
@@ -71,14 +75,14 @@ namespace gm
 			if (payload.empty() || payload.size() > MaxNicknameByteLength)
 				return;
 
-			if (_playerIdList.find(sessionId) != _playerIdList.end())
+			if (_playerInfoList.find(sessionId) != _playerInfoList.end())
 				return;
 
 			S2CJoinAccepted accepetedPacket{};
 			accepetedPacket.playerId = _nextPlayerId;
 
 			const std::span<const std::byte> view = std::as_bytes(std::span{ &accepetedPacket, 1 });
-			if (_serverService.Send(sessionId, static_cast<uint16_t>(PacketId::S2C_JoinAccepted), view) == false)
+			if (_serverService.Send(sessionId, ToUint16(PacketId::S2C_JoinAccepted), view) == false)
 				return;
 
 			std::string utf8NickName;
@@ -88,7 +92,7 @@ namespace gm
 			SendAllPlayerList(sessionId);
 
 			_gameServerScene->SpawnPlayer(_nextPlayerId);
-			_playerIdList[sessionId] = PlayerInfo{ _nextPlayerId, Utf8ToWide(utf8NickName.data()) };
+			_playerInfoList[sessionId] = PlayerInfo{ _nextPlayerId, Utf8ToWide(utf8NickName.data()) };
 			++_nextPlayerId;
 
 			BroadCastPlayerJoin(_nextPlayerId - 1, _gameServerScene->GetDefaultPlayerSpawnPosition(), payload);
@@ -115,14 +119,27 @@ namespace gm
 			break;
 
 		default:
-			std::cout << "유효하지 않은 패킷 Id : " << static_cast<uint16_t>(packetId) << std::endl;
+			std::cout << "유효하지 않은 패킷 Id : " << ToUint16(packetId) << std::endl;
 			break;
 		}
 	}
 
+	void GameServerApplication::HandleSessionClose(TcpSession::SessionId sessionId, TcpSession::DisconnectReason reason)
+	{
+		auto iter = _playerInfoList.find(sessionId);
+		if (iter == _playerInfoList.end())
+			return;
+
+		const PlayerId playerId = iter->second.id;
+		_gameServerScene->DestroyPlayer(iter->second.id);
+		_playerInfoList.erase(iter);
+
+		BroadcastPlayerLeft(playerId);
+	}
+
 	void GameServerApplication::SendAllPlayerList(TcpSession::SessionId target)
 	{
-		for (const auto& [sessionId, playerInfo] : _playerIdList)
+		for (const auto& [sessionId, playerInfo] : _playerInfoList)
 		{
 			S2CPlayerJoinedPrefix prefix{};
 			prefix.playerId = playerInfo.id;
@@ -134,7 +151,7 @@ namespace gm
 			std::vector<std::byte> payload(sizeof(prefix) + utf8NickName.size());
 			memcpy(payload.data(), &prefix, sizeof(prefix));
 			memcpy(payload.data() + sizeof(prefix), utf8NickName.data(), utf8NickName.size());
-			_serverService.Send(target, static_cast<std::uint16_t>(PacketId::S2C_PlayerJoined), std::span<const std::byte>{payload});
+			_serverService.Send(target, ToUint16(PacketId::S2C_PlayerJoined), std::span<const std::byte>{payload});
 		}
 	}
 
@@ -149,15 +166,15 @@ namespace gm
 		memcpy(payload.data(), &prefix, sizeof(prefix));
 		memcpy(payload.data() + sizeof(prefix), nickName.data(), nickName.size());
 
-		for (const auto& [sessionId, playerInfo] : _playerIdList)
+		for (const auto& [sessionId, playerInfo] : _playerInfoList)
 		{
-			_serverService.Send(sessionId, static_cast<std::uint16_t>(PacketId::S2C_PlayerJoined), std::span<const std::byte>{payload});
+			_serverService.Send(sessionId, ToUint16(PacketId::S2C_PlayerJoined), std::span<const std::byte>{payload});
 		}
 	}
 
 	void GameServerApplication::BroadcastPlayerStates()
 	{
-		for (const auto& [sessionId, playerInfo] : _playerIdList)
+		for (const auto& [sessionId, playerInfo] : _playerInfoList)
 		{
 			const Vector2 position = _gameServerScene->GetPlayerPosition(playerInfo.id);
 
@@ -168,14 +185,25 @@ namespace gm
 			packet.positionX = position.x;
 			packet.positionY = position.y;
 
-			_serverService.Broadcast(static_cast<std::uint16_t>(PacketId::S2C_PlayerMoved), std::as_bytes(std::span{ &packet, 1 }));
+			_serverService.Broadcast(ToUint16(PacketId::S2C_PlayerMoved), std::as_bytes(std::span{ &packet, 1 }));
+		}
+	}
+
+	void GameServerApplication::BroadcastPlayerLeft(PlayerId playerId)
+	{
+		for (const auto& [sessionId, playerInfo] : _playerInfoList)
+		{
+			S2CPlayerLeft packet{};
+			packet.playerId = playerId;
+
+			_serverService.Send(sessionId, ToUint16(PacketId::S2C_PlayerLeft), std::as_bytes(std::span{ &packet, 1 }));
 		}
 	}
 
 	PlayerId GameServerApplication::GetPlayerId(TcpSession::SessionId sessionId)
 	{
-		auto Iter = _playerIdList.find(sessionId);
-		if (Iter == _playerIdList.end())
+		auto Iter = _playerInfoList.find(sessionId);
+		if (Iter == _playerInfoList.end())
 			return InvalidPlayerId;
 
 		return Iter->second.id;
