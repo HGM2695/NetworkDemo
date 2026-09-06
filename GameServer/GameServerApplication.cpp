@@ -100,7 +100,16 @@ namespace gm
 			break;
 
 		case PacketId::C2S_ChatRequest:
-			std::cout << "C2S_ChatRequest" << std::endl;
+		{
+			if (payload.empty() || payload.size() > MaxChatMessageByteLength)
+				return;
+
+			PlayerId playerId = GetPlayerId(sessionId);
+			if (playerId == InvalidPlayerId)
+				return;
+
+			BroadcastPlayerChat(playerId, payload);
+		}
 			break;
 
 		case PacketId::C2S_MoveRequest:
@@ -197,6 +206,24 @@ namespace gm
 			packet.playerId = playerId;
 
 			_serverService.Send(sessionId, ToUint16(PacketId::S2C_PlayerLeft), std::as_bytes(std::span{ &packet, 1 }));
+		}
+	}
+
+	void GameServerApplication::BroadcastPlayerChat(PlayerId playerId, std::span<const std::byte> message)
+	{
+		if (playerId == InvalidPlayerId)
+			return;
+
+		S2CChatBroadcastPrefix prefix{};
+		prefix.senderId = playerId;
+
+		std::vector<std::byte> payload(sizeof(prefix) + message.size());
+		memcpy(payload.data(), &prefix, sizeof(prefix));
+		memcpy(payload.data() + sizeof(prefix), message.data(), message.size());
+
+		for (const auto& [sessionId, playerInfo] : _playerInfoList)
+		{
+			_serverService.Send(sessionId, ToUint16(PacketId::S2C_ChatBroadcast), payload);
 		}
 	}
 

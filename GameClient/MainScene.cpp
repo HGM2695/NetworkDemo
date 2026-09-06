@@ -1,5 +1,7 @@
 #include "MainScene.h"
 #include "NameTagWidget.h"
+#include "ChatWidget.h"
+#include "ChatBallonWidget.h"
 #include "LeaveConfirmWidget.h"
 #include "NetworkDemoGameInstance.h"
 #include "ClientPlayerAnimationComponent.h"
@@ -16,11 +18,11 @@
 #include "GMEngine/SpriteAnimator.h"
 #include "GMEngine/WidgetComponent.h"
 #include "GMEngine/SpriteComponent.h"
-#include "GMEngine/Application.h"
 #include "GMEngine/Texture.h"
 #include "GMEngine/Resources.h"
 #include "GMEngine/AudioStatics.h"
 #include "GMEngine/WidgetManager.h"
+#include "GMEngine/InputTextBox.h"
 
 namespace gm
 {
@@ -40,10 +42,16 @@ namespace gm
 		nameTagComponent->SetUserWidget<NameTagWidget>(nickName);
 		nameTagComponent->SetScreenOffset(Vector2{ 0.f, 100.f });
 
+		WidgetComponent* chatBallonComponent = player->AddComponent<WidgetComponent>();
+		ChatBallonWidget* chatBallon = chatBallonComponent->SetUserWidget<ChatBallonWidget>();
+		chatBallon->SetVisible(false);
+		chatBallonComponent->SetScreenOffset(Vector2{ 0.f, -60.f });
+
 		if (clientPlayer)
 			player->AddComponent<ClientPlayerInputComponent>();
 
 		_playerList[playerId] = player->GetWeakPtr();
+		_chatBallonList[playerId] = chatBallon;
 	}
 
 	void MainScene::DestroyPlayer(PlayerId playerId)
@@ -54,6 +62,7 @@ namespace gm
 
 		Iter->second->Destroy();
 		_playerList.erase(Iter);
+		_chatBallonList.erase(playerId);
 	}
 
 	void MainScene::ClearPlayers()
@@ -65,6 +74,7 @@ namespace gm
 		}
 
 		_playerList.clear();
+		_chatBallonList.clear();
 	}
 
 	void MainScene::SetPlayerState(PlayerId playerId, Vector2 position, PlayerMotionState motionState, PlayerFacingDirection facingDirection)
@@ -88,6 +98,16 @@ namespace gm
 			return;
 
 		_leaveConfirmWidget->SetVisible(true);
+	}
+
+	void MainScene::ShowChatBallon(PlayerId playerId, const std::wstring& message)
+	{
+		auto Iter = _chatBallonList.find(playerId);
+		if (Iter == _chatBallonList.end() || Iter->second == nullptr)
+			return;
+
+		Iter->second->SetMessage(message);
+		Iter->second->SetVisible(true);
 	}
 
 	void MainScene::OnInitialize()
@@ -129,6 +149,17 @@ namespace gm
 	void MainScene::OnEnter()
 	{
 		GetCameraManager()->SetActiveCamera(L"MainCamera");
+		_chatWidget = APPLICATION.GetWidgetManager().AddUserWidget<ChatWidget>();
+		InputTextBox* inputBox = _chatWidget->FindWidget<InputTextBox>(L"ChatInput");
+		GM_ASSERT_RETURN(inputBox, "InputTextBox 하위에 ChatInput 위젯이 등록되지 않았습니다.");
+		inputBox->OnTextSubmitted.Subscribe(_chatSubmittedConnection,
+			[inputBox](const InputTextSubmittedEvent&)
+			{
+				static_cast<NetworkDemoGameInstance&>(APPLICATION.GetGameInstance()).RequestChat(inputBox->GetText());
+				inputBox->ClearText();
+				inputBox->SetActive(false);
+			});
+
 		_leaveConfirmWidget = APPLICATION.GetWidgetManager().AddUserWidget<LeaveConfirmWidget>();
 		_leaveConfirmWidget->SetVisible(false);
 		_leaveConfirmWidget->OnLeaveConfirmed.Subscribe(_leaveConfirmedConnection, [](const LeaveConfirmedEvent&) { static_cast<NetworkDemoGameInstance&>(APPLICATION.GetGameInstance()).RequestDisconnect(); });

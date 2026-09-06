@@ -32,6 +32,8 @@ namespace gm
 		void		BroadCastPlayerJoin(PlayerId playerId, Vector2 position, std::span<const std::byte> nickName);
 		void		BroadcastPlayerStates();
 		void		BroadcastPlayerLeft(PlayerId playerId);
+		void		BroadcastPlayerChat(PlayerId playerId, std::span<const std::byte> message);
+
 		PlayerId	GetPlayerId(TcpSession::SessionId sessionId);
 
 	private:

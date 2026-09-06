@@ -56,6 +56,15 @@ namespace gm
 		_clientService.Send(ToUint16(PacketId::C2S_MoveRequest), std::as_bytes(std::span{ &packet, 1 }));
 	}
 
+	bool NetworkDemoGameInstance::RequestChat(const std::wstring& message)
+	{
+		std::string utf8Message = WideToUtf8(message);
+		if (utf8Message.empty() || utf8Message.size() > MaxChatMessageByteLength)
+			return false;
+
+		return _clientService.Send(ToUint16(PacketId::C2S_ChatRequest), std::as_bytes(std::span{ utf8Message }));
+	}
+
 	void NetworkDemoGameInstance::RequestDisconnect()
 	{
 		_clientService.Disconnect();
@@ -115,8 +124,7 @@ namespace gm
 		}
 		case gm::PacketId::S2C_PlayerJoined:
 		{
-			auto view = payload;
-			const std::size_t payloadSize = view.size();
+			const std::size_t payloadSize = payload.size();
 			const std::size_t prefixSize = sizeof(S2CPlayerJoinedPrefix);
 			if (payloadSize < prefixSize)
 				return;
@@ -130,7 +138,7 @@ namespace gm
 
 			std::string utf8NickName;
 			utf8NickName.resize(nickNameSize);
-			memcpy(utf8NickName.data(), view.last(nickNameSize).data(), nickNameSize);
+			memcpy(utf8NickName.data(), payload.last(nickNameSize).data(), nickNameSize);
 
 			_mainScene->SpawnPlayer(prefix.playerId, Vector2{ prefix.positionX, prefix.positionY }, Utf8ToWide(utf8NickName.data()), _playerId == prefix.playerId);
 
@@ -160,6 +168,27 @@ namespace gm
 		}
 		case gm::PacketId::S2C_ChatBroadcast:
 		{
+			const std::size_t payloadSize = payload.size();
+			const std::size_t prefixSize = sizeof(S2CChatBroadcastPrefix);
+			if (payloadSize < prefixSize)
+				return;
+
+			const std::size_t messageSize = payloadSize - prefixSize;
+			if (messageSize > MaxChatMessageByteLength)
+				return;
+
+			S2CChatBroadcastPrefix prefix{};
+			memcpy(&prefix, payload.data(), prefixSize);
+
+			PlayerId senderId = prefix.senderId;
+			if (senderId == InvalidPlayerId)
+				return;
+
+			std::string utf8Message;
+			utf8Message.resize(messageSize);
+			memcpy(utf8Message.data(), payload.last(messageSize).data(), messageSize);
+			_mainScene->ShowChatBallon(senderId, Utf8ToWide(utf8Message.data()));
+
 			break;
 		}
 		default:

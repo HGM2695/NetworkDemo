@@ -12,6 +12,8 @@
 namespace gm
 {
 	class LeaveConfirmWidget;
+	class ChatWidget;
+	class ChatBallonWidget;
 
 	class MainScene : public Scene
 	{
@@ -21,6 +23,7 @@ namespace gm
 		void ClearPlayers();
 		void SetPlayerState(PlayerId playerId, Vector2 position, PlayerMotionState motionState, PlayerFacingDirection facingDirection);
 		void ShowLeaveConfirmation();
+		void ShowChatBallon(PlayerId playerId, const std::wstring& message);
 
 	protected:
 		void OnInitialize() override;
@@ -30,7 +33,10 @@ namespace gm
 
 	private:
 		std::unordered_map<PlayerId, WeakGameObjectPtr> _playerList;
+		std::unordered_map<PlayerId, ChatBallonWidget*> _chatBallonList;
 
+		ChatWidget*			_chatWidget{};
+		EventConnection		_chatSubmittedConnection{};
 		LeaveConfirmWidget* _leaveConfirmWidget{};
 		EventConnection		_leaveConfirmedConnection{};
 	};
