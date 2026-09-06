@@ -131,6 +131,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ChatBallonWidget.h" />
+    <ClInclude Include="ChatWidget.h" />
     <ClInclude Include="ClientPlayerAnimationComponent.h" />
     <ClInclude Include="ClientPlayerInputComponent.h" />
     <ClInclude Include="ConnectWidget.h" />
@@ -143,6 +145,8 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ChatBallonWidget.cpp" />
+    <ClCompile Include="ChatWidget.cpp" />
     <ClCompile Include="ClientPlayerAnimationComponent.cpp" />
     <ClCompile Include="ClientPlayerInputComponent.cpp" />
     <ClCompile Include="ConnectWidget.cpp" />

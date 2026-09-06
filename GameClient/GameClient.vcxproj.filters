@@ -15,6 +15,8 @@
     <Filter Include="UserWidget">
       <UniqueIdentifier>{706e2c8b-3a96-492b-8101-9850bb8bf062}</UniqueIdentifier>
     </Filter>
+    <ClInclude Include="ChatWidget.h" />
+    <ClInclude Include="ChatBallonWidget.h" />
     <ClInclude Include="LeaveConfirmWidget.h">
       <Filter>UserWidget</Filter>
     </ClInclude>
@@ -43,6 +45,8 @@
       <Filter>UserWidget</Filter>
     </ClInclude>
     <ClInclude Include="ClientPlayerInputComponent.h" />
+    <ClCompile Include="ChatWidget.cpp" />
+    <ClCompile Include="ChatBallonWidget.cpp" />
     <ClCompile Include="LeaveConfirmWidget.cpp">
       <Filter>UserWidget</Filter>
     </ClCompile>
