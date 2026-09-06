@@ -61,6 +61,12 @@ namespace gm
 		if (outSocket.SetNativeSocket(acceptedSocket) == false)
 			return AcceptResult::Failed;
 
+		if (outSocket.EnableNoDelay() == false)
+		{
+			outSocket.Close();
+			return AcceptResult::Failed;
+		}
+
 		return AcceptResult::Accepted;
 	}
 }

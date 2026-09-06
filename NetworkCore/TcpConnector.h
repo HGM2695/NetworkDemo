@@ -19,6 +19,7 @@ namespace gm
 		ConnectResult	TryTakeSocket(TcpSocket& outSocket);
 
 	private:
+		ConnectResult	TakeConnectedSocket(TcpSocket& outSocket);
 		void			Clear();
 
 	private:

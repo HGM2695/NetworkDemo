@@ -41,6 +41,7 @@ namespace gm
 		bool		IsValid() const;
 		SOCKET		GetNativeSocket() const;
 		bool		SetNativeSocket(SOCKET socket);
+		bool		EnableNoDelay();
 
 	private:
 		bool		SetNonBlocking();

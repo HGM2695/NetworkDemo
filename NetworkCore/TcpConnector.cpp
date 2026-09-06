@@ -35,11 +35,7 @@ namespace gm
 	TcpConnector::ConnectResult TcpConnector::TryTakeSocket(TcpSocket& outSocket)
 	{
 		if (_state == State::Complete)
-		{
-			outSocket = std::move(_connectingSocket);
-			Clear();
-			return ConnectResult::Complete;
-		}
+			return TakeConnectedSocket(outSocket);
 		else if (_state == State::Connecting)
 		{
 			fd_set writeFDS{};
@@ -76,12 +72,23 @@ namespace gm
 				return ConnectResult::Failed;
 			}
 
-			outSocket = std::move(_connectingSocket);
-			Clear();
-			return ConnectResult::Complete;
+			return TakeConnectedSocket(outSocket);
 		}
 
 		return ConnectResult::Failed;
+	}
+
+	TcpConnector::ConnectResult TcpConnector::TakeConnectedSocket(TcpSocket& outSocket)
+	{
+		if (_connectingSocket.EnableNoDelay() == false)
+		{
+			Clear();
+			return ConnectResult::Failed;
+		}
+
+		outSocket = std::move(_connectingSocket);
+		Clear();
+		return ConnectResult::Complete;
 	}
 
 	void TcpConnector::Clear()

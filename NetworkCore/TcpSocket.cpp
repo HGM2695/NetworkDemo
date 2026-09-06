@@ -1,5 +1,7 @@
 #include "TcpSocket.h"
 
+#include <WS2tcpip.h>
+
 namespace gm
 {
 	TcpSocket::~TcpSocket()
@@ -116,6 +118,15 @@ namespace gm
 		}
 
 		return true;
+	}
+
+	bool TcpSocket::EnableNoDelay()
+	{
+		if (IsValid() == false)
+			return false;
+
+		const BOOL value = TRUE;
+		return setsockopt(_socket, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<const char*>(&value), sizeof(value)) != SOCKET_ERROR;
 	}
 
 	bool TcpSocket::SetNonBlocking()
