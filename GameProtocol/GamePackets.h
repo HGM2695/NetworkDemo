@@ -29,6 +29,7 @@ namespace gm
     // S2C_PlayerJoined: S2CPlayerJoinedPrefix 뒤에 UTF-8 nickname bytes
     // S2C_ChatBroadcast: S2CChatBroadcastPrefix 뒤에 UTF-8 message bytes
 
+#pragma pack(push, 1)
     struct S2CJoinAccepted
     {
         PlayerId        playerId = InvalidPlayerId;
@@ -65,4 +66,5 @@ namespace gm
     {
         PlayerId        senderId = InvalidPlayerId;
     };
+#pragma pack(pop)
 }

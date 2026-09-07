@@ -6,11 +6,13 @@
 
 namespace gm
 {
+#pragma pack(push, 1)
 	struct PacketHeader
 	{
 		std::uint16_t	packetSize = 0;
 		std::uint16_t	packetId = 0;
 	};
+#pragma pack(pop)
 
 	static_assert(sizeof(PacketHeader) == 4);
 
